@@ -1,0 +1,11 @@
+{   // TODO - Add attach to npm debug option for editing through debug with nodemon
+    "version": "0.2.0",
+    "configurations": [      
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "program": "${workspaceRoot}/dist/server.js"
+      }      
+    ]
+  }

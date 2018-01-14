@@ -1,0 +1,47 @@
+{
+  "name": "topsecret",
+  "version": "1.0.0",
+  "description": "An application for sharing information and chat anonymously",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm run serve",
+    "serve": "node dist/server.js",
+    "build": "tsc",
+    "build-watch": "tsc -w",    
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tslint-config": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lebensmittelgeschaft/Topsecret.git"
+  },
+  "author": "Shaked Manes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lebensmittelgeschaft/Topsecret/issues"
+  },
+  "homepage": "https://github.com/Lebensmittelgeschaft/Topsecret#readme",
+  "bin": {
+    "tslint": "./node_modules/.bin/tslint",
+    "tsc": "./node_moduels/.bin/tsc",
+    "nodemon": "./node_modules/.bin/nodemon"
+  },
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongoose": "^4.13.9",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^1.0.0",
+    "@types/express": "^4.11.0",
+    "@types/mongoose": "^4.7.32",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^9.3.0",
+    "nodemon": "^1.14.11",
+    "tslint": "^5.9.1",
+    "tslint-config-airbnb": "^5.4.2",
+    "typescript": "^2.6.2"
+  }
+}
