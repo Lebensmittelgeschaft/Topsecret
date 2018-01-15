@@ -7,7 +7,7 @@
     "start": "npm run serve",
     "serve": "node dist/server.js",
     "build": "tsc",
-    "build-watch": "tsc -w",    
+    "build-watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tslint-config": "tslint -c tslint.json -p tsconfig.json"
   },

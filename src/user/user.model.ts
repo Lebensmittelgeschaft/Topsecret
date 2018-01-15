@@ -1,7 +1,8 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
+import { IBaseModel } from 'generic/generic.interface';
 import * as bcrypt from 'bcrypt';
 
-export interface IUser extends Document {
+export interface IUser extends IBaseModel {
   id: string;
   nickname: string;
 }

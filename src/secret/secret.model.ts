@@ -1,6 +1,7 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
+import { IBaseModel } from 'generic/generic.interface';
 
-export interface ISecret extends Document {
+export interface ISecret extends IBaseModel {
   id: string;
   secretText: string;
   comments: { id: String, comment: String }[];
