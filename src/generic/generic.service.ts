@@ -1,4 +1,4 @@
-import { model, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { IBaseModel } from './generic.interface';
 
 // Generic class for quering mongoose models
@@ -14,20 +14,30 @@ export class BaseService {
   constructor(model: Model<IBaseModel>) {
     this.model = model;    
   }
+  
+  // Get Methods
 
-  protected async getAll(): Promise<IBaseModel[]> {
+  protected getAll(): Promise<IBaseModel[]> {
     return this.getByProps({});
   }
 
-  protected async getByProps(props: Object): Promise<IBaseModel[]> {
+  protected getByProps(props: Object): Promise<IBaseModel[]> {
     return this.model.find(props).exec();
   }
 
-  protected async getOneByProps(props: Object): Promise<IBaseModel | null> {
+  protected getOneByProps(props: Object): Promise<IBaseModel | null> {
     return this.model.findById(props).exec();
   }
 
-  protected async deleteByProps(props: Object): Promise<IBaseModel | null> {
+  // Save Methods
+
+  protected save(model: IBaseModel): Promise<IBaseModel> {
+    return model.save();
+  }
+
+  // Delete Methods
+
+  protected deleteByProps(props: Object): Promise<IBaseModel | null> {
     return this.model.findByIdAndRemove(props).exec();
   }
 }
