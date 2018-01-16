@@ -2,42 +2,40 @@ import { Model } from 'mongoose';
 import { IBaseModel } from './generic.interface';
 
 // Generic class for quering mongoose models
-export class BaseService {
+export class BaseService<T extends IBaseModel> {
 
-  private model: Model<IBaseModel>;
+  private model: Model<T>;
   private primaryKey: any;
 
   /**
    * Contruct base service class
    * @param model - Mongoose model for queries   
    */
-  constructor(model: Model<IBaseModel>) {
+  constructor(model: Model<T>) {
     this.model = model;    
   }
   
   // Get Methods
 
-  protected getAll(): Promise<IBaseModel[]> {
-    return this.getByProps({});
+  getByProps(props: Partial<T>) {
+    const parsedProps = props ? props as Object : {} ;
+    return this.model.find(parsedProps);
   }
 
-  protected getByProps(props: Object): Promise<IBaseModel[]> {
-    return this.model.find(props).exec();
-  }
-
-  protected getOneByProps(props: Object): Promise<IBaseModel | null> {
-    return this.model.findById(props).exec();
+  getOneByProps(props: Partial<T>) {
+    const parsedProps = props ? props as Object : {};
+    return this.model.findOne(parsedProps);
   }
 
   // Save Methods
 
-  protected save(model: IBaseModel): Promise<IBaseModel> {
+  save(model: T) {
     return model.save();
   }
 
   // Delete Methods
 
-  protected deleteByProps(props: Object): Promise<IBaseModel | null> {
-    return this.model.findByIdAndRemove(props).exec();
+  deleteById(id: string | number | Object) {
+    return this.model.findByIdAndRemove(id);
   }
 }

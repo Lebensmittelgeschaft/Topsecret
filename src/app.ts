@@ -6,6 +6,9 @@ import { config } from './config';
 
 const app = express();
 
+// Attaching node promise to the mongoose promise
+(<any>mongoose).Promise = global.Promise;
+
 mongoose.connect(config.MONGOURI, { useMongoClient: true } ,(err) => {
   if (err) {
     console.error(err);
@@ -14,9 +17,9 @@ mongoose.connect(config.MONGOURI, { useMongoClient: true } ,(err) => {
   console.log('MongoDB Connection Established');
 });
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.PORT || 3000);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(logger('dev'));
+app.use(logger(process.env.NODE_ENV || 'dev'));
 
 export default app;
