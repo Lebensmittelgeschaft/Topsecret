@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { IBaseModel } from './generic.interface';
 
 // Generic class for quering mongoose models
@@ -33,9 +33,17 @@ export class BaseService<T extends IBaseModel> {
     return model.save();
   }
 
+  // Update Methods
+
+  update(props: Partial<T>) {
+    const id = props.id ? props.id :  {};
+    const parsedProps = props ? props as Object : {};
+    return this.model.findByIdAndUpdate(id, parsedProps, { new: true });
+  }
+
   // Delete Methods
 
-  deleteById(id: string | number | Object) {
+  deleteById(id: Types.ObjectId) {
     return this.model.findByIdAndRemove(id);
   }
 }
