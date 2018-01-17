@@ -36,9 +36,9 @@ export class BaseService<T extends IBaseModel> {
   // Update Methods
 
   update(props: Partial<T>) {
-    const id = props.id ? props.id :  {};
+    if (!props.id) throw new Error('Error updating model, id not defined');    
     const parsedProps = props ? props as Object : {};
-    return this.model.findByIdAndUpdate(id, parsedProps, { new: true });
+    return this.model.findByIdAndUpdate(props.id, parsedProps, { new: true });
   }
 
   // Delete Methods

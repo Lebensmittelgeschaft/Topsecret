@@ -1,51 +1,34 @@
 import { BaseService } from 'generic/generic.service';
 import { IBaseModel } from 'generic/generic.interface';
-import { Types, Model } from 'mongoose';
+import { Types } from 'mongoose';
 
-
-
+// Controller factory for attaching services to controller with basic methods
 export function controllerFactory<T extends IBaseModel>(service : BaseService<T>) {
-  class Controller{
-    getUsersByProps(props: Partial<T>) {
-      return service.getByProps(props);
+
+  abstract class BaseController {
+
+    protected static service = service;
+
+    static getByProps(props: Partial<T>) {
+      return BaseController.service.getByProps(props);
     }
-    saveUser(user: T) {
-      return service.save(user);
+
+    static getOneByProps(props: Partial<T>) {
+      return BaseController.service.getOneByProps(props);
+    }
+    
+    static save(user: T) {
+      return BaseController.service.save(user);
     }
   
-    updateUser(user: T) {
-      return service.update(user);
+    static update(user: T) {
+      return BaseController.service.update(user);
     }
   
-    deleteUser(id: string | number) {
-      return service.deleteById(Types.ObjectId(id));
+    static deleteById(id: string | number) {
+      return BaseController.service.deleteById(Types.ObjectId(id));
     }
   }
-  return Controller;
+
+  return BaseController;
 }
-
-
-export abstract class BaseController<T extends IBaseModel> {
-  
-  protected static baseService: BaseService<T>;
-
-  constructor(baseService: BaseService<T>) {
-
-  }
-  getUsersByProps(props: Partial<T>) {
-    return BaseController.baseService.getByProps(props);
-  }
-
-  saveUser(user: T) {
-    return this.baseService.save(user);
-  }
-
-  updateUser(user: T) {
-    return this.baseService.update(user);
-  }
-
-  deleteUser(id: string | number) {
-    return this.baseService.deleteById(Types.ObjectId(id));
-  }
-}
-

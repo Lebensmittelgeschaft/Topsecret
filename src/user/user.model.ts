@@ -8,8 +8,16 @@ export interface IUser extends IBaseModel {
 }
 
 const userSchema = new Schema({
-  id: String,
-  nickname: String,
+  id: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  nickname: {
+    type: String,
+    unique: true,
+    required: true,
+  },
 });
 
 // Save the id's as hashes for maximum protection from stealing identity

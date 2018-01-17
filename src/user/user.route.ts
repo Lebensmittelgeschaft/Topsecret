@@ -7,14 +7,18 @@ export const userRouter = Router();
 // GET requests
 
 /**
- * Get users by query search, default returns all users
+ * Get user/s by query search, default returns all users
+ * Query search can contains - 
+ *  1.id - id of the user
+ *  2.nickname - nickname of the user
  */
 userRouter.get('/', async (req, res) => {
   const properties: any = {};
   if (req.query.id) properties.id = req.query.id;
   if (req.query.nickname) properties.nickname = req.query.nickname;
-  try {
-    const users = await UserController.getUsersByProps(properties);
+  try {    
+    const users = properties === {} ? await UserController.getByProps(properties) :
+                                      await UserController.getOneByProps(properties);
     res.json(users);  
   } catch (err) {
     res.status(500).send('Error find user/s');
@@ -25,11 +29,14 @@ userRouter.get('/', async (req, res) => {
 
 /**
  * Save new user 
+ * Most have parameters:
+ *  id - id of the user
+ *  nickname - nickname of the user
  */
-userRouter.post('/', async (req, res) => {  
-  const user = new UserModel(req.body);
+userRouter.post('/', async (req, res) => { 
   try {
-    const savedUser = await UserController.saveUser(user);
+    const user = new UserModel(req.body);
+    const savedUser = await UserController.save(user);
     res.send(savedUser);
   } catch (err) {
     res.status(500).send('Error saving user');
@@ -41,10 +48,10 @@ userRouter.post('/', async (req, res) => {
 /**
  * Update existing user
  */
-userRouter.put('/', async (req, res) => {  
-  const updateUser: Partial<IUser> = req.body;
+userRouter.put('/', async (req, res) => {    
   try {
-    const updatedUser = UserController.updateUser(updateUser as IUser);
+    const user: Partial<IUser> = req.body;
+    const updatedUser = UserController.update(user as IUser);
     res.json(updatedUser);
   } catch (err) {
     res.status(500).send('Error updating user');
@@ -57,14 +64,14 @@ userRouter.put('/', async (req, res) => {
  * Delete user by id
  */
 userRouter.delete('/', async (req, res) => {
+  // TODO - Check if even needed ?
   if (req.body.id) {
     try {
-      const deleteUser = UserController.deleteUser(req.body.id);
-      res.json(deleteUser);
+      const deletedUser = UserController.deleteById(req.body.id);
+      res.json(deletedUser);
     } catch (err) {
       res.status(500).send('Error deleting user');
-    }
-    
+    }    
   }
   else res.status(404).send('Id not found');
 });

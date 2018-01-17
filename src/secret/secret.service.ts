@@ -1,7 +1,7 @@
-import { secret as Secret } from 'secret/secret.model';
+import { secret as Secret, ISecret } from 'secret/secret.model';
 import { BaseService } from 'generic/generic.service';
 
-export class SecretService extends BaseService {  
+export class SecretService extends BaseService<ISecret> {  
   
   constructor() {
     super(Secret);
