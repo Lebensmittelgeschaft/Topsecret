@@ -1,5 +1,5 @@
-import { MessageController } from 'message/message.controller';
-import { message as MessageModel, IMessage } from 'message/message.model';
+import { MessageController } from './message.controller';
+import { message as MessageModel, IMessage } from './message.model';
 import { Router } from 'express';
 
 export const messageRouter = Router();
@@ -66,9 +66,9 @@ messageRouter.put('/', async (req, res) => {
  */
 messageRouter.delete('/', async (req, res) => {
   // TODO - check which user trying to delete and let him delete only his messages
-  if (req.body.id) {
+  if (req.body._id) {
     try {
-      const deletedMessage = MessageController.deleteById(req.body.id);
+      const deletedMessage = MessageController.deleteById(req.body._id);
       res.json(deletedMessage);      
     } catch (err) {
       res.status(500).send('Error deleting message');

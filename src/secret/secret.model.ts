@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { IBaseModel } from 'generic/generic.interface';
+import { IBaseModel } from '../generic/generic.interface';
 
-export interface ISecret extends IBaseModel {
-  id: string;
+export interface ISecret extends IBaseModel {  
   secretText: string;
   comments: { id: string, comment: string, timestamp: number }[];
   likes: number;
@@ -11,10 +10,6 @@ export interface ISecret extends IBaseModel {
 }
 
 const secretSchema = new Schema({
-  id: {
-    type: String,
-    unique: true,    
-  },
   publisherNickname: {
     type: String,
     required: true,

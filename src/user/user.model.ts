@@ -1,14 +1,14 @@
 import { Schema, model } from 'mongoose';
-import { IBaseModel } from 'generic/generic.interface';
+import { IBaseModel } from '../generic/generic.interface';
 import * as bcrypt from 'bcrypt';
 
 export interface IUser extends IBaseModel {
-  id: string;
+  _id: string;
   nickname: string;
 }
 
 const userSchema = new Schema({
-  id: {
+  _id: {
     type: String,
     unique: true,
     required: true,
@@ -18,13 +18,13 @@ const userSchema = new Schema({
     unique: true,
     required: true,
   },
-});
+}, {_id: false});
 
 // Save the id's as hashes for maximum protection from stealing identity
 userSchema.pre('save', function (this: IUser, next) {  
   bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(this.id, salt, (err, hash) => {
-      this.id = hash;
+    bcrypt.hash(this._id, salt, (err, hash) => {
+      this._id = hash;
       next();
     });
   });

@@ -19,31 +19,31 @@ export class BaseService<T extends IBaseModel> {
 
   getByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {} ;
-    return this.model.find(parsedProps);
+    return this.model.find(parsedProps).then(result => result).catch(err => null);
   }
 
   getOneByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {};
-    return this.model.findOne(parsedProps);
+    return this.model.findOne(parsedProps).then(result => result).catch(err => null);
   }
 
   // Save Methods
 
   save(model: T) {
-    return model.save();
+    return model.save().then(result => result).catch(err => null);
   }
 
   // Update Methods
 
   update(props: Partial<T>) {
-    if (!props.id) throw new Error('Error updating model, id not defined');    
-    const parsedProps = props ? props as Object : {};
-    return this.model.findByIdAndUpdate(props.id, parsedProps, { new: true });
+    if (!props._id) return null;    
+    const parsedProps = props ? props as Object : {};    
+    return this.model.findOneAndUpdate({ _id: props._id}, parsedProps, { new: true }).then(result => result).catch(err => null);
   }
 
   // Delete Methods
 
   deleteById(id: Types.ObjectId) {
-    return this.model.findByIdAndRemove(id);
+    return this.model.findByIdAndRemove(id).then(result => result).catch(err => null);
   }
 }

@@ -1,6 +1,6 @@
-import { MessageService } from 'message/message.service';
-import { IMessage } from 'message/message.model';
-import { controllerFactory } from 'generic/generic.controller';
+import { MessageService } from './message.service';
+import { IMessage } from './message.model';
+import { controllerFactory } from '../generic/generic.controller';
 
 const baseController = controllerFactory<IMessage>(new MessageService());
 

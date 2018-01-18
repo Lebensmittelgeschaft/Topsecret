@@ -1,5 +1,5 @@
-import { UserController } from 'user/user.controller';
-import { user as UserModel, IUser } from 'user/user.model';
+import { UserController } from './user.controller';
+import { user as UserModel, IUser } from './user.model';
 import { Router } from 'express';
 
 export const userRouter = Router();
@@ -9,12 +9,12 @@ export const userRouter = Router();
 /**
  * Get user/s by query search, default returns all users
  * Query search can contains - 
- *  1.id - id of the user
+ *  1._id - id of the user
  *  2.nickname - nickname of the user
  */
 userRouter.get('/', async (req, res) => {
   const properties: any = {};
-  if (req.query.id) properties.id = req.query.id;
+  if (req.query._id) properties._id = req.query._id;
   if (req.query.nickname) properties.nickname = req.query.nickname;
   try {    
     const users = properties === {} ? await UserController.getByProps(properties) :
@@ -65,9 +65,9 @@ userRouter.put('/', async (req, res) => {
  */
 userRouter.delete('/', async (req, res) => {
   // TODO - Check if even needed ?
-  if (req.body.id) {
+  if (req.body._id) {
     try {
-      const deletedUser = UserController.deleteById(req.body.id);
+      const deletedUser = UserController.deleteById(req.body._id);
       res.json(deletedUser);
     } catch (err) {
       res.status(500).send('Error deleting user');

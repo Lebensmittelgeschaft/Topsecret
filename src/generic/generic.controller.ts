@@ -1,5 +1,5 @@
-import { BaseService } from 'generic/generic.service';
-import { IBaseModel } from 'generic/generic.interface';
+import { BaseService } from './generic.service';
+import { IBaseModel } from './generic.interface';
 import { Types } from 'mongoose';
 
 // Controller factory for attaching services to controller with basic methods

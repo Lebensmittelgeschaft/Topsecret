@@ -1,6 +1,6 @@
-import { SecretService } from 'secret/secret.service';
-import { ISecret } from 'secret/secret.model';
-import { controllerFactory } from 'generic/generic.controller';
+import { SecretService } from './secret.service';
+import { ISecret } from './secret.model';
+import { controllerFactory } from '../generic/generic.controller';
 
 const baseController = controllerFactory<ISecret>(new SecretService());
 

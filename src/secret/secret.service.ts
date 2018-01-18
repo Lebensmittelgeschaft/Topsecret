@@ -1,5 +1,5 @@
-import { secret as Secret, ISecret } from 'secret/secret.model';
-import { BaseService } from 'generic/generic.service';
+import { secret as Secret, ISecret } from './secret.model';
+import { BaseService } from '../generic/generic.service';
 
 export class SecretService extends BaseService<ISecret> {  
   

@@ -1,5 +1,5 @@
-import { SecretController } from 'secret/secret.controller';
-import { secret as SecretModel, ISecret } from 'secret/secret.model';
+import { SecretController } from './secret.controller';
+import { secret as SecretModel, ISecret } from './secret.model';
 import { Router } from 'express';
 
 export const secretRouter = Router();
@@ -9,11 +9,11 @@ export const secretRouter = Router();
 /**
  * Get secret/s by query search, default returns all secrets
  * Query search can contains: 
- *  1.id - id of the secret
+ *  1._id - id of the secret
  */
 secretRouter.get('/', async (req, res) => {
   const properties: any = {};
-  if (req.query.id) properties.id = req.query.id;  
+  if (req.query._id) properties.id = req.query._id;  
   try {
     const secrets = properties === {} ? await SecretController.getByProps(properties) : 
                                         await SecretController.getOneByProps(properties);
@@ -61,9 +61,9 @@ secretRouter.put('/', async (req, res) => {
 secretRouter.delete('/', async (req, res) => {
   // TODO - implement checking of which user is trying to delete and let him
   //        delete only his secrets
-  if (req.body.id) {
+  if (req.body._id) {
     try {
-      const deletedSecret = SecretController.deleteById(req.body.id);
+      const deletedSecret = SecretController.deleteById(req.body._id);
       res.json(deletedSecret);      
     } catch (err) {
       res.status(500).send('Error deleting secret');
