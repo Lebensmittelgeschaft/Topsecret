@@ -25,8 +25,8 @@ export function controllerFactory<T extends IBaseModel>(service : BaseService<T>
       return BaseController.service.update(user);
     }
   
-    static deleteById(id: string | number) {
-      return BaseController.service.deleteById(Types.ObjectId(id));
+    static deleteById(id: string) {
+      return BaseController.service.deleteById(id);
     }
   }
 

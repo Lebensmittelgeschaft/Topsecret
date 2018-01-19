@@ -30,7 +30,12 @@ export class BaseService<T extends IBaseModel> {
   // Save Methods
 
   save(model: T) {
-    return model.save().then(result => result).catch(err => null);
+    // console.log(model);
+    return model.save().then(result => result)
+    .catch((err) => { 
+      console.log(err);
+      return null;
+    });
   }
 
   // Update Methods
@@ -38,12 +43,14 @@ export class BaseService<T extends IBaseModel> {
   update(props: Partial<T>) {
     if (!props._id) return null;    
     const parsedProps = props ? props as Object : {};    
-    return this.model.findOneAndUpdate({ _id: props._id}, parsedProps, { new: true }).then(result => result).catch(err => null);
+    return this.model.findOneAndUpdate({ _id: props._id }, parsedProps, { new: true })
+                     .then(result => result)
+                     .catch(err => null);
   }
 
   // Delete Methods
 
-  deleteById(id: Types.ObjectId) {
+  deleteById(id: string) {
     return this.model.findByIdAndRemove(id).then(result => result).catch(err => null);
   }
 }

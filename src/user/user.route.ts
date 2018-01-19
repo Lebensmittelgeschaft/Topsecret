@@ -35,6 +35,7 @@ userRouter.get('/', async (req, res) => {
  */
 userRouter.post('/', async (req, res) => { 
   try {
+    req.body._id = req.body._id;
     const user = new UserModel(req.body);
     const savedUser = await UserController.save(user);
     res.send(savedUser);
