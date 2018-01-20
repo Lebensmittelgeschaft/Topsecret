@@ -1,17 +1,22 @@
 import { Schema, model } from 'mongoose';
 import { IBaseModel } from '../generic/generic.interface';
 
-export interface ISecret extends IBaseModel {  
+// Used require because this package don't have types declared
+const pluginRefValidator = require('mongoose-id-validator');
+
+export interface ISecret extends IBaseModel {
+  publisher: string;
   secretText: string;
-  comments: { id: string, comment: string, timestamp: number }[];
+  comments: { postBy: string, comment: string, timestamp?: number }[];
   likes: number;
   dislikes: number;
   timestamp: number;
 }
 
 const secretSchema = new Schema({
-  publisherNickname: {
+  publisher: {
     type: String,
+    ref: 'User',
     required: true,
   },
   secretText: {
@@ -19,7 +24,11 @@ const secretSchema = new Schema({
     required: true,
   },
   comments: {
-    type: [{ id: String, comment: String, timestamp: Number }],
+    type: [{
+      postBy: { type: String, ref: 'User' },
+      comment: String,
+      timestamp: { type: Number, default: new Date().getTime() },
+    }],
     default: [],
   },
   likes: {
@@ -36,11 +45,16 @@ const secretSchema = new Schema({
   },
 });
 
-// Used for avoid from client to modify the timestamp of the secret
+// Used for avoid from client to modify the timestamp, likes, dislikes and comments of the secret
 secretSchema.pre('save', function (this: ISecret, next) {
-  const currentDate = new Date().getTime();
-  if (this.timestamp > currentDate) this.timestamp = currentDate;
+  this.timestamp = new Date().getTime();
+  if (this.likes) this.likes = 0;
+  if (this.dislikes) this.dislikes = 0;
+  if (this.comments) this.comments = [];
   next();
 });
+
+// Add plugin for validating the existance of referenced values
+secretSchema.plugin(pluginRefValidator);
 
 export const secret = model<ISecret>('Secret', secretSchema);

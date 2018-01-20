@@ -19,7 +19,7 @@ export class BaseService<T extends IBaseModel> {
 
   getByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {} ;
-    return this.model.find(parsedProps).then(result => result).catch(err => null);
+    return this.model.find(parsedProps).then(result => result).catch(err => []);
   }
 
   getOneByProps(props: Partial<T>) {
@@ -29,13 +29,8 @@ export class BaseService<T extends IBaseModel> {
 
   // Save Methods
 
-  save(model: T) {
-    // console.log(model);
-    return model.save().then(result => result)
-    .catch((err) => { 
-      console.log(err);
-      return null;
-    });
+  save(model: T) {    
+    return model.save().then(result => result).catch(err => null);
   }
 
   // Update Methods

@@ -1,5 +1,5 @@
 const testConfig = {
-  MONGOURI: 'mongodb://test:test@ds251747.mlab.com:51747/topsecret_test',
+  MONGOURI: 'mongodb://test:test@ds263367.mlab.com:63367/topsecret_test',
   PORT: 3000,
 };
 
