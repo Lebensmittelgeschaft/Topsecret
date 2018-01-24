@@ -1,6 +1,9 @@
 import { UserController } from './user.controller';
 import { user as UserModel, IUser } from './user.model';
 import { Router } from 'express';
+import * as mongoose from 'mongoose';
+
+
 
 export const userRouter = Router();
 
@@ -19,9 +22,13 @@ userRouter.get('/', async (req, res) => {
   try {    
     const users = properties === {} ? await UserController.getByProps(properties) :
                                       await UserController.getOneByProps(properties);
-    res.json(users);  
+    if (users) {
+      res.json(users);  
+    } else {
+      res.sendStatus(404);
+    }    
   } catch (err) {
-    res.status(500).send('Error find user/s');
+    res.sendStatus(500);
   }
 });
 
@@ -33,14 +40,16 @@ userRouter.get('/', async (req, res) => {
  *  id - id of the user
  *  nickname - nickname of the user
  */
-userRouter.post('/', async (req, res) => { 
-  try {
-    req.body._id = req.body._id;
+userRouter.post('/', async (req, res, next) => { 
+  try {    
     const user = new UserModel(req.body);
     const savedUser = await UserController.save(user);
-    res.send(savedUser);
+    console.log(savedUser);
+    if (savedUser) res.send(savedUser);
+    else res.sendStatus(400);
   } catch (err) {
-    res.status(500).send('Error saving user');
+    next(err);
+
   }
 });
 
@@ -52,10 +61,15 @@ userRouter.post('/', async (req, res) => {
 userRouter.put('/', async (req, res) => {    
   try {
     const user: Partial<IUser> = req.body;
-    const updatedUser = UserController.update(user as IUser);
-    res.json(updatedUser);
+    if (req.body._id) {
+      const updatedUser = UserController.update(user as IUser);
+      if (updatedUser) res.json(updatedUser);
+      else res.sendStatus(400);
+    } else {
+      res.sendStatus(400);
+    }    
   } catch (err) {
-    res.status(500).send('Error updating user');
+    res.sendStatus(500);
   }
 });
 
@@ -69,10 +83,11 @@ userRouter.delete('/', async (req, res) => {
   if (req.body._id) {
     try {
       const deletedUser = UserController.deleteById(req.body._id);
-      res.json(deletedUser);
+      if (deletedUser) res.json(deletedUser);
+      else res.sendStatus(404);
     } catch (err) {
-      res.status(500).send('Error deleting user');
+      res.sendStatus(500);
     }    
   }
-  else res.status(404).send('Id not found');
+  else res.sendStatus(400);
 });

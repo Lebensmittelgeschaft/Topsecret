@@ -1,5 +1,5 @@
 import { MessageController } from './message.controller';
-import { message as MessageModel, IMessage } from './message.model';
+import { message as MessageModel, IMessage, message } from './message.model';
 import { Router } from 'express';
 
 export const messageRouter = Router();
@@ -20,9 +20,10 @@ messageRouter.get('/', async (req, res) => {
   try {    
     const messages = properties === {} ? await MessageController.getByProps(properties) :
                                          await MessageController.getOneByProps(properties);
-    res.json(messages);  
+    if (message) res.json(messages);  
+    else res.sendStatus(404);
   } catch (err) {
-    res.status(500).send('Error find message/s');
+    res.sendStatus(500);
   }
 });
 
@@ -39,9 +40,10 @@ messageRouter.post('/', async (req, res) => {
   try {
     const message = new MessageModel(req.body);
     const savedMessage = await MessageController.save(message);
-    res.send(savedMessage);
+    if (savedMessage) res.send(savedMessage);
+    else res.sendStatus(400);
   } catch (err) {
-    res.status(500).send('Error saving message');
+    res.sendStatus(500);
   }
 });
 
@@ -53,10 +55,16 @@ messageRouter.post('/', async (req, res) => {
 messageRouter.put('/', async (req, res) => {
   try {
     const message: Partial<IMessage> = req.body;
-    const updatedMessage = MessageController.update(message as IMessage);
-    res.json(updatedMessage);
+    if (req.body._id) {
+      const updatedMessage = MessageController.update(message as IMessage);
+      if (updatedMessage) res.json(updatedMessage);
+      else res.sendStatus(400);
+    } else {
+      res.sendStatus(400);
+    }
+    
   } catch (err) {
-    res.status(500).send('Error updating message');
+    res.sendStatus(500);
   }
 });
 
@@ -69,10 +77,11 @@ messageRouter.delete('/', async (req, res) => {
   if (req.body._id) {
     try {
       const deletedMessage = MessageController.deleteById(req.body._id);
-      res.json(deletedMessage);      
+      if (deletedMessage) res.json(deletedMessage);      
+      else res.sendStatus(404);
     } catch (err) {
-      res.status(500).send('Error deleting message');
+      res.sendStatus(500);
     }
   }
-  else res.status(404).send('Id not found');
+  else res.sendStatus(400);
 });

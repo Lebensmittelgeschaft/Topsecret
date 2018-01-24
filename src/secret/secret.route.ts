@@ -17,9 +17,10 @@ secretRouter.get('/', async (req, res) => {
   try {
     const secrets = properties === {} ? await SecretController.getByProps(properties) : 
                                         await SecretController.getOneByProps(properties);
-    res.json(secrets);  
+    if (secrets) res.json(secrets);  
+    else res.sendStatus(404);
   } catch (err) {
-    res.status(500).send('Error find secret/s');
+    res.sendStatus(500);
   }  
 });
 
@@ -34,7 +35,8 @@ secretRouter.post('/', async (req, res) => {
   try {
     const secret = new SecretModel(req.body);
     const savedSecret = await SecretController.save(secret);
-    res.json(savedSecret);
+    if (savedSecret) res.json(savedSecret);
+    else res.sendStatus(400);
   } catch (err) {
     res.status(500).send('Error save secret');
   }
@@ -47,10 +49,15 @@ secretRouter.post('/', async (req, res) => {
 secretRouter.put('/', async (req, res) => {
   try {
     const secret : Partial<ISecret> = req.body;
-    const updatedSecret = await SecretController.update(secret as ISecret);
-    res.json(updatedSecret);
+    if (req.body._id) {
+      const updatedSecret = await SecretController.update(secret as ISecret);    
+      if (updatedSecret) res.json(updatedSecret);
+      else res.sendStatus(400);
+    } else {
+      res.sendStatus(400);
+    }    
   } catch (err) {
-    res.status(500).send('Error update secret');
+    res.sendStatus(500);
   }
 });
 
@@ -64,10 +71,11 @@ secretRouter.delete('/', async (req, res) => {
   if (req.body._id) {
     try {
       const deletedSecret = SecretController.deleteById(req.body._id);
-      res.json(deletedSecret);      
+      if (deletedSecret) res.json(deletedSecret);      
+      else res.sendStatus(404);
     } catch (err) {
-      res.status(500).send('Error deleting secret');
+      res.sendStatus(500);
     }
   }
-  else res.status(404).send('Id not found');
+  else res.sendStatus(400);
 });

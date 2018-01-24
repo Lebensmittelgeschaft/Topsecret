@@ -19,18 +19,18 @@ export class BaseService<T extends IBaseModel> {
 
   getByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {} ;
-    return this.model.find(parsedProps).then(result => result).catch(err => []);
+    return this.model.find(parsedProps);    
   }
 
   getOneByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {};
-    return this.model.findOne(parsedProps).then(result => result).catch(err => null);
+    return this.model.findOne(parsedProps);    
   }
 
   // Save Methods
 
   save(model: T) {    
-    return model.save().then(result => result).catch(err => null);
+    return model.save();    
   }
 
   // Update Methods
@@ -38,14 +38,12 @@ export class BaseService<T extends IBaseModel> {
   update(props: Partial<T>) {
     if (!props._id) return null;    
     const parsedProps = props ? props as Object : {};    
-    return this.model.findOneAndUpdate({ _id: props._id }, parsedProps, { new: true })
-                     .then(result => result)
-                     .catch(err => null);
+    return this.model.findOneAndUpdate({ _id: props._id }, parsedProps, { new: true });
   }
 
   // Delete Methods
 
   deleteById(id: string) {
-    return this.model.findByIdAndRemove(id).then(result => result).catch(err => null);
+    return this.model.findByIdAndRemove(id);    
   }
 }
