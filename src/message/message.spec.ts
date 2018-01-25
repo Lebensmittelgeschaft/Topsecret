@@ -23,17 +23,7 @@ describe('Message Serivce', () => {
   let testMessageTimestamp = 0;
   let testMessageUserId = '';
 
-  before(async () => {
-    (<any>mongoose).Promise = global.Promise;
-
-    await mongoose.connect(config.MONGOURI, { useMongoClient: true }, (err) => {
-      if (err) {
-        console.error(err);
-        process.exit();
-      }
-      console.log('MongoDB Connection Established');
-    });
-
+  before(async () => {    
     userService = new UserService();
     messageService = new MessageService();
     await UserModel.remove({});
@@ -45,8 +35,7 @@ describe('Message Serivce', () => {
 
   after(async () => {
     await UserModel.remove({});
-    await MessageModel.remove({});
-    await mongoose.disconnect();
+    await MessageModel.remove({});    
   });
 
   it('Should save valid message', async () => {
@@ -76,16 +65,16 @@ describe('Message Serivce', () => {
     testUserMessages += 2;
   });
 
-  it('Should not save invalid message', async () => {
+  it('Should not save invalid message', () => {
     const invalidMessage = new MessageModel({
       sender: testUser._id,
     });
     const invalidMessage2 = new MessageModel({
       messageText: 'Hey I will not saved',
     });
-
-    expect(await messageService.save(invalidMessage)).to.not.exist;
-    expect(await messageService.save(invalidMessage2)).to.not.exist;
+    
+    expect(messageService.save(invalidMessage)).to.be.rejectedWith(mongoose.ValidationError);
+    expect(messageService.save(invalidMessage2)).to.be.rejectedWith(mongoose.ValidationError);    
   });
 
   it('Should return all messages', async () => {
@@ -114,15 +103,10 @@ describe('Message Serivce', () => {
   });
 
   it('Should not return message by unexisting properties', async () => {
-    const unexistMessage = await messageService.getByProps({ _id: 'unexist' });
-    const unexistMessage2 = await messageService.getByProps({ sender: 'jeowq' });
-    const unexistMessage3 = await messageService.getOneByProps({ _id: 'eunwieq' });
-    const unexistMessage4 = await messageService.getOneByProps({ receiver: 'eunwieq' });
-
-    expect(unexistMessage).to.be.an('array').that.is.empty;
-    expect(unexistMessage2).to.be.an('array').that.is.empty;
-    expect(unexistMessage3).to.not.exist;
-    expect(unexistMessage4).to.not.exist;
+    expect(messageService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError);    
+    expect(messageService.getByProps({ sender: 'jeowq' })).to.eventually.be.an('array').that.is.empty;
+    expect(messageService.getOneByProps({ _id: 'eunwieq' })).to.be.rejectedWith(mongoose.CastError);
+    expect(messageService.getOneByProps({ receiver: 'eunwieq' })).to.eventually.not.exist;
   });
 
   it('Should update existing message', async () => {
@@ -133,10 +117,8 @@ describe('Message Serivce', () => {
     if (message) expect(message.messageText).to.equal(textMessage);
   });
 
-  it('Should not update unexisting message', async () => {
-    const unexistMessage = await messageService.update({ _id: 'reqwqo', messageText: 'nevermind' });
-
-    expect(unexistMessage).to.not.exist;
+  it('Should not update unexisting message', () => {
+    expect(messageService.update({ _id: 'reqwqo', messageText: 'nevermind' })).to.be.rejectedWith(mongoose.CastError);
   });
 
   it('Should delete existing message', async () => {
@@ -146,15 +128,11 @@ describe('Message Serivce', () => {
     if (deletedMessage) expect(deletedMessage.timestamp).to.equal(testMessageTimestamp);
   });
 
-  it('Should not delete existing message by sender', async () => {
-    const deletedMessage = await messageService.deleteById(testMessageUserId);
-
-    expect(deletedMessage).to.not.exist;
+  it('Should not delete existing message by sender', () => {
+    expect(messageService.deleteById(testMessageUserId)).to.be.rejectedWith(mongoose.CastError);
   });
 
-  it('Should not delete unexisting message', async () => {
-    const unexistMessage = await messageService.deleteById('eqweowko');
-
-    expect(unexistMessage).to.not.exist;
+  it('Should not delete unexisting message', () => {
+    expect(messageService.deleteById('eqweowko')).to.be.rejectedWith(mongoose.CastError);
   });
 });

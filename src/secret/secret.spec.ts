@@ -23,16 +23,6 @@ describe('Secret Service', () => {
   let testSecretUserId = '';
 
   before(async () => {
-    (<any>mongoose).Promise = global.Promise;
-
-    await mongoose.connect(config.MONGOURI, { useMongoClient: true }, (err) => {
-      if (err) {
-        console.error(err);
-        process.exit();
-      }
-      console.log('MongoDB Connection Established');
-    });
-
     userService = new UserService();
     secretService = new SecretService();
     await UserModel.remove({});
@@ -44,8 +34,7 @@ describe('Secret Service', () => {
 
   after(async () => {
     await UserModel.remove({});
-    await SecretModel.remove({});
-    await mongoose.disconnect();
+    await SecretModel.remove({});    
   });
 
   it('Should save valid secret', async () => {
@@ -93,7 +82,7 @@ describe('Secret Service', () => {
     }
   });
 
-  it('Should not save invalid secret', async () => {
+  it('Should not save invalid secret', () => {
     const invalidSecret = new SecretModel({
       publisher: 'notexist',
       secretText: 'This will not saved',
@@ -103,8 +92,8 @@ describe('Secret Service', () => {
       secretText: 'hehehehe',
     });
 
-    expect(await secretService.save(invalidSecret)).to.not.exist;
-    expect(await secretService.save(invalidSecret2)).to.not.exist;
+    expect(secretService.save(invalidSecret)).to.be.rejectedWith(mongoose.ValidationError);    
+    expect(secretService.save(invalidSecret2)).to.be.rejectedWith(mongoose.ValidationError);   
   });
 
   it('Should return all secrets', async () => {
@@ -130,16 +119,11 @@ describe('Secret Service', () => {
     }
   });
 
-  it('Should not return any secret', async () => {
-    const unexistSecret = await secretService.getByProps({ _id: 'unexist' });
-    const unexistSecret2 = await secretService.getByProps({ publisher: 'unexist' });
-    const unexistSecret3 = await secretService.getOneByProps({ secretText: 'wmeqoemwo' });
-    const unexistSecret4 = await secretService.getOneByProps({ publisher: 'ewqewqeqw' });
-
-    expect(unexistSecret).to.be.an('array').that.is.empty;
-    expect(unexistSecret2).to.be.an('array').that.is.empty;
-    expect(unexistSecret3).to.not.exist;
-    expect(unexistSecret4).to.not.exist;
+  it('Should not return any secret', () => {
+    expect(secretService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError);
+    expect(secretService.getByProps({ publisher: 'unexist' })).to.eventually.be.an('array').that.is.empty;
+    expect(secretService.getOneByProps({ secretText: 'wmeqoemwo' })).to.eventually.not.exist;
+    expect(secretService.getOneByProps({ publisher: 'ewqewqeqw' })).to.eventually.not.exist;
   });
 
   it('Should update existing secret', async () => {
@@ -157,10 +141,8 @@ describe('Secret Service', () => {
     }
   });
 
-  it('Should not update unexistng secret', async () => {
-    const unexistSecret = await secretService.update({ _id: 'unexist', secretText: 'nevermind' });
-
-    expect(unexistSecret).to.not.exist;
+  it('Should not update unexistng secret', () => {
+    expect(secretService.update({ _id: 'unexist', secretText: 'nevermind' })).to.be.rejectedWith(mongoose.CastError);
   });
 
   it('Should delete existing secret by id', async () => {
@@ -170,15 +152,11 @@ describe('Secret Service', () => {
     if (deletedSecret) expect(deletedSecret.publisher).to.equal(testSecretUserId);
   });
 
-  it('Should not delete existing secret by publisher', async () => {
-    const deletedSecret = await secretService.deleteById(testSecretUserId);
-
-    expect(deletedSecret).to.not.exist;
+  it('Should not delete existing secret by publisher', () => {
+    expect(secretService.deleteById(testSecretUserId)).to.be.rejectedWith(mongoose.CastError);
   });
 
-  it('Should not delete unexisting secret', async () => {
-    const unexistSecret = await secretService.deleteById('unexist');
-
-    expect(unexistSecret).to.not.exist;
+  it('Should not delete unexisting secret', () => {
+    expect(secretService.deleteById('unexist')).to.be.rejectedWith(mongoose.CastError);
   });
 }); 
