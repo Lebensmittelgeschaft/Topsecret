@@ -48,9 +48,9 @@ const secretSchema = new Schema({
 // Used for avoid from client to modify the timestamp, likes, dislikes and comments of the secret
 secretSchema.pre('save', function (this: ISecret, next) {
   this.timestamp = new Date().getTime();
-  if (this.likes) this.likes = 0;
-  if (this.dislikes) this.dislikes = 0;
-  if (this.comments) this.comments = [];
+  this.likes = 0;
+  this.dislikes = 0;
+  this.comments = [];
   next();
 });
 

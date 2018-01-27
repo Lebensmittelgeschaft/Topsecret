@@ -4,12 +4,14 @@
   "description": "An application for sharing information and chat anonymously",
   "main": "app.js",
   "scripts": {
-    "start": "npm run build && npm run serve",
-    "serve": "node dist/app.js",
+    "start": "set NODE_ENV=dev&&npm run build && npm run serve",
+    "start-watch": "set NODE_ENV=dev&& npm run build && nodemon -e ts -w ./src -i ./src/**/*.spec.ts -x npm run watch-serve",
+    "serve": "node dist/app.js",    
+    "watch-serve": "ts-node --inspect src/app.ts",
     "build": "tsc",
     "build-watch": "tsc -w",
     "build-start": "npm run build && npm run start",
-    "test": "NODE_ENV=test&& npm run build && mocha dist/test.js dist/**/*.spec.js -t 3000",
+    "test": "set NODE_ENV=test&& npm run build && mocha dist/test.js dist/**/*.spec.js -t 3000",
     "tslint-config": "tslint -c tslint.json -p tsconfig.json"
   },
   "repository": {

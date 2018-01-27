@@ -2,35 +2,42 @@ import { expect } from 'chai';
 import { message as MessageModel, IMessage } from './message.model';
 import { user as UserModel, IUser } from '../user/user.model';
 import { MessageService } from './message.service';
-import { UserService } from '../user/user.service';
 import { config } from '../config';
 import * as mongoose from 'mongoose';
 
 describe('Message Serivce', () => {
   let messageService: MessageService;
-  let userService: UserService;
 
-  let testUser: IUser = new UserModel({
-    _id: '12345678',
-    nickname: 'funnyBunny',
-  });
-  let testUser2: IUser = new UserModel({
-    _id: '24681012',
-    nickname: 'Cancerify',
-  });
-  let testUserMessages = 0;
-  let testMessageId = '';
-  let testMessageTimestamp = 0;
-  let testMessageUserId = '';
+  let testUser: IUser;
+  let testUser2: IUser;
+
+  let testMessage : IMessage;
+  let testMessage2 : IMessage;
 
   before(async () => {    
-    userService = new UserService();
     messageService = new MessageService();
     await UserModel.remove({});
     await MessageModel.remove({});
 
-    testUser = await userService.save(testUser) as IUser;
-    testUser2 = await userService.save(testUser2) as IUser;
+    testUser = await new UserModel({
+      _id: '12345678',
+      nickname: 'funnyBunny',
+    }).save();
+    testUser2 = await new UserModel({
+      _id: '24681012',
+      nickname: 'Cancerify',
+    }).save();
+
+    testMessage = await new MessageModel({
+      sender: testUser._id,
+      receiver: testUser2._id,
+      messageText: 'Whatsup',
+    }).save();
+    testMessage2 = await new MessageModel({
+      sender: testUser2._id,
+      receiver: testUser._id,
+      messageText: 'Fine wat bout u',
+    }).save();
   });
 
   after(async () => {
@@ -38,7 +45,7 @@ describe('Message Serivce', () => {
     await MessageModel.remove({});    
   });
 
-  it('Should save valid message', async () => {
+  it('Should save valid message', () => {
     const message = new MessageModel({
       sender: testUser._id,
       receiver: testUser2._id,
@@ -50,19 +57,13 @@ describe('Message Serivce', () => {
       messageText: 'Hey its me again',
     });
 
-    const savedMessage = await messageService.save(message);
-    const savedMessage2 = await messageService.save(message2);
+    return Promise.all([
+      expect(messageService.save(message)).to.eventually.exist
+                                          .and.have.property('messageText', message.messageText),
+      expect(messageService.save(message2)).to.eventually.exist
+                                           .and.have.property('messageText', message2.messageText),
 
-    expect(savedMessage).to.exist;
-    expect(savedMessage2).to.exist;
-    if (savedMessage) {
-      expect(savedMessage.messageText).to.equal(message.messageText);
-      testMessageId = savedMessage._id;
-      testMessageTimestamp = savedMessage.timestamp;
-      testMessageUserId = savedMessage.sender;
-    }
-    if (savedMessage2) expect(savedMessage2.messageText).to.equal(message2.messageText);
-    testUserMessages += 2;
+    ]);    
   });
 
   it('Should not save invalid message', () => {
@@ -73,66 +74,61 @@ describe('Message Serivce', () => {
       messageText: 'Hey I will not saved',
     });
     
-    expect(messageService.save(invalidMessage)).to.be.rejectedWith(mongoose.ValidationError);
-    expect(messageService.save(invalidMessage2)).to.be.rejectedWith(mongoose.ValidationError);    
+    return Promise.all([
+      expect(messageService.save(invalidMessage)).to.be.rejectedWith(mongoose.ValidationError),
+      expect(messageService.save(invalidMessage2)).to.be.rejectedWith(mongoose.ValidationError),
+    ]);   
   });
 
-  it('Should return all messages', async () => {
-    expect(await messageService.getByProps({})).to.exist;
+  it('Should return all messages', () => {
+    return expect(messageService.getByProps({})).to.eventually.exist;
   });
 
-  it('Should return messages by sender', async () => {
-    const messages = await messageService.getByProps({ sender: testUser._id });
-
-    expect(messages).to.exist;
-    if (messages) expect(messages).to.have.length(testUserMessages);
+  it('Should return messages by sender', () => {
+    return expect(messageService.getByProps({ sender: testUser._id })).to.eventually.exist;    
   });
 
-  it('Should return messages by receiver', async () => {
-    const messages = await messageService.getByProps({ receiver: testUser2._id });
-
-    expect(messages).to.exist;
-    if (messages) expect(messages).to.have.length(testUserMessages);
+  it('Should return messages by receiver', () => {
+    return expect(messageService.getByProps({ receiver: testUser2._id })).to.eventually.exist;
   });
 
-  it('Should return message by id', async () => {
-    const message = await messageService.getOneByProps({ _id: testMessageId });
-
-    expect(message).to.exist;
-    if (message) expect(message.timestamp).to.equal(testMessageTimestamp);
+  it('Should return message by id', () => {
+    return expect(messageService.getOneByProps({ _id: testMessage._id })).to.eventually.exist;
   });
 
   it('Should not return message by unexisting properties', async () => {
-    expect(messageService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError);    
-    expect(messageService.getByProps({ sender: 'jeowq' })).to.eventually.be.an('array').that.is.empty;
-    expect(messageService.getOneByProps({ _id: 'eunwieq' })).to.be.rejectedWith(mongoose.CastError);
-    expect(messageService.getOneByProps({ receiver: 'eunwieq' })).to.eventually.not.exist;
+    return Promise.all([
+      expect(messageService.getByProps({ _id: 'exist' })).to.be.rejectedWith(mongoose.CastError),
+      expect(messageService.getByProps({ sender: 'jeowq' })).to.eventually.be.an('array')
+                                                            .that.is.empty,
+      expect(messageService.getOneByProps({ _id: 'euieq' })).to.be.rejectedWith(mongoose.CastError),
+      expect(messageService.getOneByProps({ receiver: 'eunwieq' })).to.eventually.not.exist,
+    ]);
   });
 
-  it('Should update existing message', async () => {
+  it('Should update existing message', () => {
     const textMessage = 'Text Changed';
-    const message = await messageService.update({ _id: testMessageId, messageText: textMessage });
-
-    expect(message).to.exist;
-    if (message) expect(message.messageText).to.equal(textMessage);
+    return expect(messageService.update({ _id: testMessage2._id, messageText: textMessage }))
+                  .to.eventually.exist.and.have.property('messageText', textMessage);
   });
 
   it('Should not update unexisting message', () => {
-    expect(messageService.update({ _id: 'reqwqo', messageText: 'nevermind' })).to.be.rejectedWith(mongoose.CastError);
+    return expect(messageService.update({ _id: 'reqwqo', messageText: 'nevermind' }))
+                  .to.be.rejectedWith(mongoose.CastError);
   });
 
-  it('Should delete existing message', async () => {
-    const deletedMessage = await messageService.deleteById(testMessageId);
-
-    expect(deletedMessage).to.exist;
-    if (deletedMessage) expect(deletedMessage.timestamp).to.equal(testMessageTimestamp);
+  it('Should delete existing message', () => {
+    return expect(messageService.deleteById(testMessage._id))
+                  .to.eventually.exist.and.have.property('timestamp', testMessage.timestamp);
   });
 
   it('Should not delete existing message by sender', () => {
-    expect(messageService.deleteById(testMessageUserId)).to.be.rejectedWith(mongoose.CastError);
+    return expect(messageService.deleteById(testMessage.sender))
+                  .to.be.rejectedWith(mongoose.CastError);
   });
 
   it('Should not delete unexisting message', () => {
-    expect(messageService.deleteById('eqweowko')).to.be.rejectedWith(mongoose.CastError);
+    return expect(messageService.deleteById('eqweowko'))
+                  .to.be.rejectedWith(mongoose.CastError);
   });
 });

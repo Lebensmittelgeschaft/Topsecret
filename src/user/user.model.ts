@@ -23,41 +23,13 @@ const userSchema = new Schema({
 
 // Utility method for generate hash for given string
 export function generateHash(id: string): string {
-  const hashAlgo = crypto.createHmac('sha512', 'Axe9LAAqAxEttiGq69aW');
+  const hashAlgo = crypto.createHmac('sha256', 'Axe9LAAqAxEttiGq69aW');
   return hashAlgo.update(id).digest('hex');  
 }
 
-// Pre defined hooks for hashing the id for the user for maximum anonymously
-
-userSchema.pre('save', function save(this: IUser, next) {
-  // console.log(`In pre-save : this._id = ${this._id}, this.nickname= ${this.nickname}`);  
+// Pre defined hook for hashing the id for the user for maximum anonymously
+userSchema.pre('save', function save(this: IUser, next) {  
   this._id = generateHash(this._id);
-  // console.log(`After pre-save : this._id = ${this._id}, this.nickname= ${this.nickname}`);    
-  next();
-});
-
-userSchema.pre('find', function find(this: any, next) {
-  if (this._id) this._id = generateHash(this._id);
-  next();
-});
-
-userSchema.pre('findOne', function findOne(this: any, next) {
-  if (this._id) this._id = generateHash(this._id);
-  next();
-});
-
-userSchema.pre('findOneAndRemove', function findOneAndRemove(this: any, next) {
-  if (this._id) this._id = generateHash(this._id);
-  next();
-});
-
-userSchema.pre('findOneAndUpdate', function findOneAndUpdate(this: any, next) {
-  if (this._id) this._id = generateHash(this._id);
-  next();
-});
-
-userSchema.pre('remove', function remove(this: any, next) {
-  if (this._id) this._id = generateHash(this._id);
   next();
 });
 

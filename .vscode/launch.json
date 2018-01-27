@@ -1,11 +1,62 @@
-{   // TODO - Add attach to npm debug option for editing through debug with nodemon
+{   
     "version": "0.2.0",
     "configurations": [      
       {
         "type": "node",
         "request": "launch",
-        "name": "Launch Program",
+        "name": "Launch Javascript Server Debugger",
         "program": "${workspaceRoot}/dist/app.js"
-      }      
-    ]
+      },
+      {
+        "name": "Debug Typescript Mocha",
+        "request": "launch",        
+        "type": "node",
+        "cwd": "${workspaceRoot}",
+        "protocol" : "inspector",
+        "stopOnEntry": false,
+        "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",        
+        "args": [
+          "src/test.ts",
+          "src/**/*.spec.ts",
+          "--no-timeouts",
+          "-r",
+          "${workspaceRoot}/node_modules/ts-node/register",
+          "--colors"
+        ],        
+        "env": { "NODE_ENV": "test"}        
+      },
+      {
+        "name": "Launch Typescript Server",
+        "request": "launch",
+        "type": "node",
+        "cwd": "${workspaceRoot}",
+        "protocol": "inspector",
+        "stopOnEntry": false,
+        "program": "${workspaceRoot}/node_modules/nodemon/bin/nodemon",                
+        "args": [
+          "--watch",
+          "src/**/*.ts",
+          "--ignore",
+          "src/**/*.spec.ts",
+          "--exec",
+          "${workspaceRoot}/node_modules/.bin/ts-node",
+          "--inspect",
+          "src/app.ts"
+        ],
+        "restart": true,        
+        "env": { "NODE_ENV": "dev"}
+      },
+      {
+        "name": "Debug TS Files",
+        "type": "node",
+        "request": "launch",
+        "args": ["src/app.ts"],
+        "runtimeArgs": ["--nolazy", "-r", "${workspaceRoot}/node_modules/ts-node/register"],
+        "sourceMaps": true,
+        "stopOnEntry": false,        
+        "cwd": "${workspaceRoot}",
+        "protocol": "inspector",
+        "env": { "NODE_ENV": "dev"}
+       }        
+   ]
   }

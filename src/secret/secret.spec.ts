@@ -2,34 +2,39 @@ import { expect } from 'chai';
 import { secret as SecretModel, ISecret } from './secret.model';
 import { user as UserModel, IUser } from '../user/user.model';
 import { SecretService } from './secret.service';
-import { UserService } from '../user/user.service';
 import { config } from '../config';
 import * as mongoose from 'mongoose';
 
 describe('Secret Service', () => {
-  let secretService: SecretService;
-  let userService: UserService;
+  let secretService: SecretService; 
 
-  let testUser: IUser = new UserModel({
-    _id: '12345678',
-    nickname: 'funnyBunny',
-  });
-  let testUser2: IUser = new UserModel({
-    _id: '24681012',
-    nickname: 'Cancerify',
-  });
-  let testUserSecrets = 0;
-  let testSecretId = '0';
-  let testSecretUserId = '';
+  let testUser: IUser;
+  let testUser2: IUser;
+  let testSecret: ISecret;
+  let testSecret2: ISecret;
 
-  before(async () => {
-    userService = new UserService();
+  before(async () => {    
     secretService = new SecretService();
     await UserModel.remove({});
     await SecretModel.remove({});
+    
+    testUser = await new UserModel({
+      _id: '12345678',
+      nickname: 'funnyBunny',
+    }).save();
+    testUser2 = await new UserModel({
+      _id: '24681012',
+      nickname: 'Cancerify',
+    }).save();
 
-    testUser = await userService.save(testUser) as IUser;
-    testUser2 = await userService.save(testUser2) as IUser;
+    testSecret = await new SecretModel({
+      publisher: testUser._id,
+      secretText: 'Publish secret',
+    }).save();
+    testSecret2 = await new SecretModel({
+      publisher: testUser2._id,
+      secretText: 'Second publish secret',
+    }).save();    
   });
 
   after(async () => {
@@ -37,7 +42,7 @@ describe('Secret Service', () => {
     await SecretModel.remove({});    
   });
 
-  it('Should save valid secret', async () => {
+  it('Should save valid secret', () => {
     const secret = new SecretModel({
       publisher: testUser._id,
       secretText: 'Hello world! this is my secret',
@@ -47,20 +52,15 @@ describe('Secret Service', () => {
       secretText: 'lol',
     });
 
-    const savedSecret = await secretService.save(secret);
-    const savedSecret2 = await secretService.save(secret2);
-    testUserSecrets += 1;
-    expect(savedSecret).to.exist;
-    expect(savedSecret2).to.exist;
-    if (savedSecret) expect(savedSecret.publisher).to.equal(testUser._id);
-    if (savedSecret2) {
-      expect(savedSecret2.publisher).to.equal(testUser2._id);
-      testSecretId = savedSecret2._id;
-      testSecretUserId = savedSecret2.publisher;
-    }
+    return Promise.all([
+      expect(secretService.save(secret)).to.eventually.exist
+                                        .and.have.property('publisher', testUser._id),
+      expect(secretService.save(secret2)).to.eventually.exist
+                                         .and.have.property('publisher', testUser2._id),
+    ]);    
   });
 
-  it('Should save secret with default values', async () => {
+  it('Should save secret with default values', () => {
     const preDefinedSecret = new SecretModel({
       publisher: testUser._id,
       secretText: 'This will have default values',
@@ -69,17 +69,14 @@ describe('Secret Service', () => {
       dislikes: 1,
       timestamp: 0,
     });
-
-    const savedSecret = await secretService.save(preDefinedSecret);
-    testUserSecrets += 1;
-
-    expect(savedSecret).to.exist;
-    if (savedSecret) {
-      expect(savedSecret.comments).to.be.empty;
-      expect(savedSecret.likes).to.equal(0);
-      expect(savedSecret.dislikes).to.equal(0);
-      expect(savedSecret.timestamp).to.be.above(0);
-    }
+    const savedSecret = secretService.save(preDefinedSecret);
+    return Promise.all([
+      expect(savedSecret).to.eventually.exist,
+      expect(savedSecret).to.eventually.have.property('likes', 0),
+      expect(savedSecret).to.eventually.have.property('dislikes', 0),
+      expect(savedSecret).to.eventually.have.property('timestamp').above(0),
+      expect(savedSecret).to.eventually.have.property('comments').that.is.an('array').that.is.empty,
+    ]);   
   });
 
   it('Should not save invalid secret', () => {
@@ -92,71 +89,73 @@ describe('Secret Service', () => {
       secretText: 'hehehehe',
     });
 
-    expect(secretService.save(invalidSecret)).to.be.rejectedWith(mongoose.ValidationError);    
-    expect(secretService.save(invalidSecret2)).to.be.rejectedWith(mongoose.ValidationError);   
+    return Promise.all([
+      expect(secretService.save(invalidSecret)).to.be.rejectedWith(mongoose.ValidationError),
+      expect(secretService.save(invalidSecret2)).to.be.rejectedWith(mongoose.ValidationError),
+    ]);   
   });
 
-  it('Should return all secrets', async () => {
-    const secrets = await secretService.getByProps({});
-
-    expect(secrets).to.exist;
+  it('Should return all secrets', () => {
+    return expect(secretService.getByProps({})).to.eventually.exist;   
   });
 
-  it('Should return existing secrets by publisher', async () => {
-    const secrets = await secretService.getByProps({ publisher: testUser._id });
-
-    expect(secrets).to.exist;
-    expect(secrets).to.have.length(testUserSecrets);
+  it('Should return existing secrets by publisher', () => {
+    return expect(secretService.getByProps({ publisher: testUser._id })).to.eventually.exist;    
   });
 
-  it('Should return existing secret\'s publisher (IUser) object', async () => {
-    const secret = await secretService.getOneByProps({ publisher: testUser2._id });
-
-    expect(secret).to.exist;
-    if (secret) {
-      const populatedSecret = await secret.populate('publisher').execPopulate();
-      expect((populatedSecret.publisher as any).nickname).to.equal(testUser2.nickname);
-    }
+  it('Should return existing secret\'s publisher (IUser) object', () => {
+    const secretPopulate = secretService.getOneByProps({ publisher: testUser2._id })
+                                        .populate('publisher');
+    
+    return expect(secretPopulate).to.eventually.exist
+                                 .and.have.property('publisher')
+                                 .that.have.property('nickname', testUser2.nickname);
   });
 
   it('Should not return any secret', () => {
-    expect(secretService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError);
-    expect(secretService.getByProps({ publisher: 'unexist' })).to.eventually.be.an('array').that.is.empty;
-    expect(secretService.getOneByProps({ secretText: 'wmeqoemwo' })).to.eventually.not.exist;
-    expect(secretService.getOneByProps({ publisher: 'ewqewqeqw' })).to.eventually.not.exist;
+    return Promise.all([
+      expect(secretService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError),
+      expect(secretService.getByProps({ publisher: 'unexist' })).to.eventually.be.an('array')
+                                                                .that.is.empty,
+      expect(secretService.getOneByProps({ secretText: 'wmeqoemwo' })).to.eventually.not.exist,
+      expect(secretService.getOneByProps({ publisher: 'ewqewqeqw' })).to.eventually.not.exist,
+    ]);
   });
 
-  it('Should update existing secret', async () => {
+  it('Should update existing secret', () => {
     const secretTextUpdate = 'Hey this is updated!';
-    const updatedSecret = await secretService.update({
-      _id: testSecretId,
+    const comment = { postBy: testUser._id, comment: 'The update worked!' };
+    const updatedSecret = secretService.update({
+      _id: testSecret._id,
       secretText: secretTextUpdate,
-      comments: [{ postBy: testUser._id, comment: 'The update worked!' }],
+      comments: [comment],
     });
 
-    expect(updatedSecret).to.exist;
-    if (updatedSecret) {
-      expect(updatedSecret.secretText).to.equal(secretTextUpdate);
-      expect(updatedSecret.comments[0].postBy).to.equal(testUser._id);
-    }
+    return Promise.all([
+      expect(updatedSecret).to.eventually.exist,
+      expect(updatedSecret).to.eventually.have.property('secretText', secretTextUpdate),
+      expect(updatedSecret).to.eventually
+                           .have.nested.property('comments[0].postBy', comment.postBy),
+                           
+    ]);
   });
 
   it('Should not update unexistng secret', () => {
-    expect(secretService.update({ _id: 'unexist', secretText: 'nevermind' })).to.be.rejectedWith(mongoose.CastError);
+    return expect(secretService.update({ _id: 'exist', secretText: 'never' }))
+                                       .to.be.rejectedWith(mongoose.CastError);
   });
 
-  it('Should delete existing secret by id', async () => {
-    const deletedSecret = await secretService.deleteById(testSecretId);
-
-    expect(deletedSecret).to.exist;
-    if (deletedSecret) expect(deletedSecret.publisher).to.equal(testSecretUserId);
+  it('Should delete existing secret by id',  () => {
+    return expect(secretService.deleteById(testSecret2._id))
+                  .to.eventually.exist.and.have.property('publisher', testSecret2.publisher);
   });
 
   it('Should not delete existing secret by publisher', () => {
-    expect(secretService.deleteById(testSecretUserId)).to.be.rejectedWith(mongoose.CastError);
+    return expect(secretService.deleteById(testSecret.publisher))
+                  .to.be.rejectedWith(mongoose.CastError);
   });
 
   it('Should not delete unexisting secret', () => {
-    expect(secretService.deleteById('unexist')).to.be.rejectedWith(mongoose.CastError);
+    return expect(secretService.deleteById('unexist')).to.be.rejectedWith(mongoose.CastError);
   });
 }); 

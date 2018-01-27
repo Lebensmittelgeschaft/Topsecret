@@ -30,7 +30,9 @@ app.use('/user', UserRoute);
 app.use('/secret', SecretRoute);
 app.use('/message', MessageRoute);
 const errorHandler : express.ErrorRequestHandler = (err,req,res,next) => {
-  if (err.name === 'ValidationError') res.sendStatus(400);
+  if (process.env.NODE_ENV === 'dev') console.error(err);
+  if (err.name === 'ValidationError' || err.name === 'CastError' ||
+     (err.name === 'MongoError' && err.code === 11000)) res.sendStatus(400);
   else res.sendStatus(500);
 };
 app.use(errorHandler);
