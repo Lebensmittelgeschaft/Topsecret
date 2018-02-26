@@ -6,7 +6,7 @@
   "scripts": {
     "start": "set NODE_ENV=dev&&npm run build && npm run serve",
     "start-watch": "set NODE_ENV=dev&& npm run build && nodemon -e ts -w ./src -i ./src/**/*.spec.ts -x npm run watch-serve",
-    "serve": "node dist/app.js",    
+    "serve": "node dist/app.js",
     "watch-serve": "ts-node --inspect src/app.ts",
     "build": "tsc",
     "build-watch": "tsc -w",
