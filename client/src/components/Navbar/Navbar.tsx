@@ -14,8 +14,7 @@ export const NAVBAR_TAB_CHAT = 'Chat';
 export const NAVBAR_TAB_RANDOMCHAT = 'RandomChat';
 export const NAVBAR_TAB_SETTINGS = 'Settings';
 
-const NAVBAR_TABS = [NAVBAR_TAB_FEED, NAVBAR_TAB_CHAT, NAVBAR_TAB_RANDOMCHAT, NAVBAR_TAB_SETTINGS];
-
+const NAVBAR_TABS = [NAVBAR_TAB_SETTINGS, NAVBAR_TAB_RANDOMCHAT, NAVBAR_TAB_CHAT, NAVBAR_TAB_FEED];
 
 export interface NavbarProps {
 
@@ -36,17 +35,17 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 
   render() {
-    const tabs: JSX.Element[] = [];
+    const tabs: React.ReactNode[] = [];
     for (const tab of NAVBAR_TABS) {
       tabs.push(<Tab value={tab} label={tab} />);
     }
 
     return (
-      <AppBar position="static">        
-          <Tabs value={this.state.current} onChange={this.changeHanlder} fullWidth={true}>
+      <AppBar position="static" classes={{colorPrimary: style.Navbar}}>        
+          <Tabs value={this.state.current} onChange={this.changeHanlder} centered={true} fullWidth={true} >
             {tabs}
-            <Logo/>
-          </Tabs>
+            <Logo/>            
+          </Tabs>          
       </AppBar>
     );
   }

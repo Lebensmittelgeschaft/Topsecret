@@ -9,7 +9,7 @@ const style     = require('./Logo.css');
 const logoImage = require('./logo.png');
 
 export interface LogoProps {
-
+    
 }
 
 const logo = (props: LogoProps) => {
