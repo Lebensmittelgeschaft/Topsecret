@@ -49,7 +49,6 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       </AppBar>
     );
   }
-
 }
 
 export default Navbar;
