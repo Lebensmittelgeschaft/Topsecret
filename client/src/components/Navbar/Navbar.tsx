@@ -37,7 +37,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   render() {
     const tabs: React.ReactNode[] = [];
     for (const tab of NAVBAR_TABS) {
-      tabs.push(<Tab value={tab} label={tab} />);
+      tabs.push(<Tab key={tab} value={tab} label={tab} />);
     }
 
     return (

@@ -14,7 +14,7 @@ export interface LogoProps {
 
 const logo = (props: LogoProps) => {
     return (        
-        <Tab value="LOGO">
+        <Tab key="LOGO" value="LOGO">
            <img className={style.logoImage} src={logoImage} alt="Topsecret logo"/>
         </Tab>
     );
