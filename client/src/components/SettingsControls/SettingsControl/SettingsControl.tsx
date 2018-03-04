@@ -10,12 +10,12 @@ export enum PropType {
     Input = 'INPUT_CONTROL',    
 }
 
+export type ControlType = { type: PropType.Input, properties: InputControlProps } |
+                          { type: PropType.Switch, properties: SwitchControlProps }
+
 export interface SettingsControlProps {
     titleDivider: string;
-    controls:  { type: PropType.Input, properties: InputControlProps }[] |
-                 { type: PropType.Switch, properites: SwitchControlProps }[] |
-                 { type: PropType.Input, properties: InputControlProps } |
-                 { type: PropType.Switch, properties: SwitchControlProps }
+    controls: ControlType | ControlType[]
 }
 
 const settingsControl = (props: SettingsControlProps) => {    
@@ -23,31 +23,34 @@ const settingsControl = (props: SettingsControlProps) => {
     let controls: JSX.Element[] = [];
     const propertiesControls = Array.isArray(props.controls) ? props.controls : new Array(props.controls);
 
-    propertiesControls.forEach((options: SettingsControlProps.controls, index) => {        
+    propertiesControls.forEach((options: ControlType , index: number) => {  
+
         switch (options.type) {
             case (PropType.Input):
                 controls.push(                        
                     <Grid key={index} container={true} direction="row" justify="space-between">
                         <Grid item={true}>
-                            <TextField 
-                                id={'text-field-' + index} 
-                                label={options.tooltip ? options.tooltip : options.label} 
-                                placeholder={options.label}
-                                onChange={options.changeHandler}
+                            <InputControl 
+                                id={options.type + index} 
+                                tooltip={options.properties.tooltip} 
+                                label={options.properties.label}
+                                changeHandler={options.properties.changeHandler}
                             />                            
                         </Grid>
                     </Grid>
                 ); 
                 break;
-            case (PropType.Switch):
-                // const switchControl = <Switch checked={}
+            case (PropType.Switch):                                    
                 controls.push(
                     <Grid key={index} container={true} direction="row" justify="space-between">
                     <Grid item={true}>
-                        {options.tooltip ? 
-                        <Tooltip id={'tooltip-' + index} title={options.tooltip}>
-                            {switchControl}
-                        </Tooltip> : {switchControl}}
+                        <SwitchControl
+                            id={options.type + index}
+                            checked={options.properties.checked}
+                            tooltip={options.properties.tooltip}
+                            label={options.properties.label}
+                            changeHandler={options.properties.changeHandler}                            
+                        />
                     </Grid>
                 </Grid>
                 );
