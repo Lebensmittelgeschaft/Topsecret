@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 export interface InputControlProps {
     id: string;
     tooltip?: string;
-    label: string;
+    placeholder: string;
     changeHandler?: (event: object) => void; 
 }
 
@@ -15,13 +15,13 @@ const inputControl = (props: InputControlProps) => {
             <Grid item={true}>
                 <TextField
                     id={props.id}
-                    label={props.tooltip ? props.tooltip : props.label}
-                    placeholder={props.label}
+                    label={props.tooltip ? props.tooltip : props.placeholder}
+                    placeholder={props.placeholder}
                     onChange={props.changeHandler}
                 />
             </Grid>
         </Grid>
     );
-}
+};
 
 export default inputControl;
