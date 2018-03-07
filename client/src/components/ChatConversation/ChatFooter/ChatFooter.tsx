@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { CardActions } from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
 
 export interface ChatFooterProps {
 
@@ -8,7 +9,7 @@ export interface ChatFooterProps {
 const chatFooter = (props: ChatFooterProps) => {
     return (
         <CardActions >
-            actions
+            <TextField placeholder="Enter message..."/>
         </CardActions>
     );
 };
