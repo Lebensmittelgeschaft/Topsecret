@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Navbar from './components/Navbar/Navbar';
 // import Feed from './containers/Feed/Feed';
-import SettingsControls from './components/SettingsControls/SettingsControls';
+import Settings from './containers/Settings/Settings';
 
 class App extends React.Component {
   render() {
@@ -9,7 +9,7 @@ class App extends React.Component {
       <div>
         <Navbar />
         {/* <Feed/> */}
-        <SettingsControls/>
+        <Settings/>
       </div>
     );
   }
