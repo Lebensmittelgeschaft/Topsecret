@@ -1,7 +1,8 @@
 import * as React from 'react';
 import Navbar from './components/Navbar/Navbar';
 // import Feed from './containers/Feed/Feed';
-import Settings from './containers/Settings/Settings';
+// import Settings from './containers/Settings/Settings';
+import Chat from './containers/Chat/Chat';
 
 class App extends React.Component {
   render() {
@@ -9,7 +10,8 @@ class App extends React.Component {
       <div>
         <Navbar />
         {/* <Feed/> */}
-        <Settings/>
+        {/* <Settings/> */}
+        <Chat/>        
       </div>
     );
   }
