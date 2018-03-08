@@ -9,12 +9,13 @@ export interface Message {
 }
 
 export interface ChatBodyProps {
+    className?: string;
     messages: Message | Message[];
 }
 
 const chatBody = (props: ChatBodyProps) => {
     return (
-        <CardContent>
+        <CardContent className={props.className}>
             messages
         </CardContent>
     );

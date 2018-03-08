@@ -4,12 +4,14 @@ import IconButton from 'material-ui/IconButton';
 import ReturnIcon from 'material-ui-icons/KeyboardArrowLeft';
 
 export interface ChatHeaderProps {
+    className?: string;
     contactName: string;
 }
 
 const chatHeader = (props: ChatHeaderProps) => {
     return (
         <CardHeader 
+            className={props.className}
             title={props.contactName}
             avatar={
                 <IconButton>
