@@ -1,5 +1,5 @@
 import * as React from 'react';
-import List from 'material-ui/List';
+import List, { ListSubheader } from 'material-ui/List';
 import { ChatPreviewProps } from './ChatPreview/ChatPreview';
 
 export interface ChatsPreviewProps {
@@ -8,7 +8,7 @@ export interface ChatsPreviewProps {
 
 const chatsPreview = (props: ChatsPreviewProps) => {
     return (
-       <List>
+       <List subheader={<ListSubheader> Chats </ListSubheader>}>
         {props.children ? props.children : 'You don\'t have any conversations'}
        </List>
     );

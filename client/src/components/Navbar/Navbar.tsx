@@ -3,20 +3,38 @@
  */
 
 import * as React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Logo from '../../ui/Logo/Logo';
+import { routes } from '../../consts/routes';
 
 const style = require('./Navbar.css');
 
-export const NAVBAR_TAB_FEED = 'Feed';
-export const NAVBAR_TAB_CHAT = 'Chat';
-export const NAVBAR_TAB_RANDOMCHAT = 'RandomChat';
-export const NAVBAR_TAB_SETTINGS = 'Settings';
-
-const NAVBAR_TABS = [NAVBAR_TAB_SETTINGS, NAVBAR_TAB_RANDOMCHAT, NAVBAR_TAB_CHAT, NAVBAR_TAB_FEED];
+export const NAVBAR_TABS = {
+  TAB_SETTINGS: {
+    name: 'Settings',
+    url: routes.settings.url
+  },
+  TAB_RANDOM_CHAT: {
+    name: 'Random Chat',
+    url: routes.randomChat.url
+  },
+  TAB_CHAT: {
+    name: 'Chat',
+    url: routes.chat.url
+  },
+  TAB_FEED: {
+  name: 'Feed',
+  url: routes.feed.url
+  }
+};
 
 export interface NavbarProps {
+
+}
+
+export interface NavbarRouteProps extends RouteComponentProps<NavbarProps> {
 
 }
 
@@ -24,22 +42,28 @@ export interface NavbarState {
   current: string;
 }
 
-class Navbar extends React.Component<NavbarProps, NavbarState> {
+class Navbar extends React.Component<NavbarProps & NavbarRouteProps, NavbarState> {
 
   state = {
-    current: NAVBAR_TAB_FEED
+    current: NAVBAR_TABS.TAB_FEED.name
   };
-
+  
   changeHanlder = (event: object, value: string) => {
+    this.props.history.push(value);
     this.setState({ current: value });
   }
 
   render() {
-    const tabs: React.ReactNode[] = [];
-    for (const tab of NAVBAR_TABS) {
-      tabs.push(<Tab key={tab} value={tab} label={tab} />);
-    }
-
+    const tabs: React.ReactNode[] = Object.keys(NAVBAR_TABS).map((key, index) => {
+      return (
+        <Tab 
+          key={key}
+          value={NAVBAR_TABS[key].url}
+          label={NAVBAR_TABS[key].name}          
+        />       
+      );  
+    });
+    
     return (
       <AppBar position="static" classes={{colorPrimary: style.Navbar}}>        
           <Tabs value={this.state.current} onChange={this.changeHanlder} centered={true} fullWidth={true} >
@@ -51,4 +75,4 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
-export default Navbar;
+export default withRouter(Navbar);
