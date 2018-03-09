@@ -19,17 +19,26 @@ export interface ChatConversationStyleProps {
     chatHeader: React.CSSProperties;
     chatBody: React.CSSProperties;
     chatFooter: React.CSSProperties;
+    chatElement: React.CSSProperties;    
 }
 
 const style = (theme: Theme) => ({
     chatContainer: {   
-        marginTop: '10%'
+        marginTop: '10%',                
+    },
+    chatElement: {
+        
     },
     chatHeader: {        
         borderBottom: '1px solid #e0e0e0',
     },
     chatBody: {
-        borderBottom: '1px solid #e0e0e0'
+        borderBottom: '1px solid #e0e0e0',
+        maxHeight: '30vh',
+        overflow: 'auto'
+    },
+    chatFooter: {
+
     }
 } as ChatConversationStyleProps);
 
@@ -43,8 +52,8 @@ class ChatConversation extends React.Component<ChatConversationProps & WithStyle
                 direction="column"
                 justify="space-between"
                 alignItems="center"
-            >
-                <Card raised={true}>
+            >   
+                <Card raised={true} className={this.props.classes.chatElement}>
                     <Grid item={true}>
                         <ChatHeader className={this.props.classes.chatHeader} contactName="Anonymous" />
                     </Grid>

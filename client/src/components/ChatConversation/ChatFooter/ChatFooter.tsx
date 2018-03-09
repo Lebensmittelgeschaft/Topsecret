@@ -9,7 +9,7 @@ export interface ChatFooterProps {
 const chatFooter = (props: ChatFooterProps) => {
     return (
         <CardActions className={props.className} >
-            <TextField InputProps={{ disableUnderline: true}} multiline={true} placeholder="Enter message..."/>
+            <TextField InputProps={{ disableUnderline: true}} multiline={true} rows="2" placeholder="Enter message..."/>
         </CardActions>
     );
 };
