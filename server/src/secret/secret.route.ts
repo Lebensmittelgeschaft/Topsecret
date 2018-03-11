@@ -7,22 +7,48 @@ export const secretRouter = Router();
 // GET requests
 
 /**
- * Get secret/s by query search, default returns all secrets
- * Query search can contains: 
- *  1._id - id of the secret
+ * Gets secrets by pagination
+ * Query search options:
+ * - Required:
+ *    * page - number of the page slice from the secrets collection
+ * - Optional:
+ *    In the future...
+ */
+secretRouter.get('', async (req, res, next) => {
+  if (req.query.page && Number.isInteger(+req.query.page)) {
+    try {
+      const secrets = await SecretController.getSecretsPagination({}, +req.query.page);
+      if (secrets) res.json(secrets);
+      else res.sendStatus(404);
+    } catch (err) {
+      next(err);
+    }
+  }
+  else res.sendStatus(400);
+});
+
+/**
+ * Get secret/s by query search parameters:
+ * Query search options: 
+ *  - Required: 
+ *    * _id - id of the secret
+ *  - Optional:
+ *      In the future...
  */
 secretRouter.get('/', async (req, res, next) => {
-  const properties: any = {};
-  if (req.query._id) properties._id = req.query._id;  
-  try {
-    const secrets = Object.keys(properties).length === 0 ?
-                    await SecretController.getByProps(properties) : 
-                    await SecretController.getOneByProps(properties);
-    if (secrets) res.json(secrets);  
-    else res.sendStatus(404);
-  } catch (err) {
-    next(err);
-  }  
+  if (req.query._id) {
+    const properties: any = {};
+    properties._id = req.query._id;
+
+    try {
+      const secret = await SecretController.getOneByProps(properties);
+      if (secret) res.json(secret);  
+      else res.sendStatus(404);
+    } catch (err) {
+      next(err);
+    }  
+  } 
+  else res.sendStatus(400);  
 });
 
 // POST requests
