@@ -1,15 +1,15 @@
 const testConfig = {
-  MONGOURI: 'mongodb://test:test@ds263367.mlab.com:63367/topsecret_test',
+  MONGOURI: 'mongodb://root:root@ds161148.mlab.com:61148/topsecret_test',
   PORT: 3000,
 };
 
 const devConfig = {
-  MONGOURI: 'mongodb://dev:dev@ds159187.mlab.com:59187/topsecret_dev',
+  MONGOURI: 'mongodb://root:root@ds259268.mlab.com:59268/topsecret_dev',
   PORT: 3000,
 };
 
 const prodConfig = {
-  MONGOURI: 'mongodb://prod:prod@ds159187.mlab.com:59187/topsecret_prod',
+  MONGOURI: 'mongodb://root:root@ds261088.mlab.com:61088/topsecret_prod',
   PORT: 80,
 };
 

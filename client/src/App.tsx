@@ -1,19 +1,25 @@
 import * as React from 'react';
-import './App.css';
-
-const logo = require('./logo.svg');
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
+import Feed from './containers/Feed/Feed';
+import Settings from './containers/Settings/Settings';
+import Chat from './containers/Chat/Chat';
+import { routes } from './consts/routes';
 
 class App extends React.Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+      <div>
+        <Navbar />
+        <Switch>
+          <Route path={routes.feed.url} component={Feed}/>
+          <Route path={routes.chat.url} component={Chat} />
+          <Route path={routes.settings.url} component={Settings} />
+          <Redirect from="/" to={routes.feed.url} />
+        </Switch>
+        {/* <Feed/> */}
+        {/* <Settings/> */}
+        {/* <Chat/>         */}
       </div>
     );
   }
