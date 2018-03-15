@@ -1,5 +1,5 @@
-import { GraphQLObjectType, Thunk } from 'graphql';
-import { queryFields as UserQueryFields } from './user/user.queries';
+import { GraphQLObjectType } from 'graphql';
+import { UserQueryFields } from './user/user.queries';
 
 const query = new GraphQLObjectType({
   name: 'Query',
@@ -7,7 +7,8 @@ const query = new GraphQLObjectType({
 
   fields: {
     ...UserQueryFields,
-  }
+  },
+
 });
 
-export default query;
+export { query as Queries };

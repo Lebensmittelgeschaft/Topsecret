@@ -7,7 +7,7 @@ import { config } from './config';
 import { userRouter as UserRoute } from './user/user.route';
 import { secretRouter as SecretRoute } from './secret/secret.route';
 import { messageRouter as MessageRoute } from './message/message.route';
-import GraphqlSchema from './schemas/schema';
+import { GraphqlSchema } from './schemas/schema';
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.use(logger(process.env.NODE_ENV || 'dev'));
 app.use('/graphql', (req, res) => {
   graphqlHTTP({
     schema: GraphqlSchema,
-    graphiql: true
+    graphiql: true,
   })(req, res);
 });
 

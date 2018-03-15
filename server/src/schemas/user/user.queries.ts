@@ -1,27 +1,27 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
-import UserType from './user.type';
-import { UserService } from '../../user/user.service';
+import { GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
+import { UserType } from './user.type';
+import { UserController } from '../../user/user.controller';
 
-export const queryFields = {
+const queryFields = {
+  
   user: {
     description: 'Get user by id',
     type: UserType,
     args: {
-      id: { type: GraphQLString },
+      id: { type: new GraphQLNonNull(GraphQLString) },
     },
-    resolve: (root: any, args: any) => {
-      return { _id: '1234', nickname: 'test' };
-    }
-  }
-}
+    resolve: async (root: any, args: any) => {      
+      return await UserController.getOneByProps({ _id: args.id });      
+    },
+  },
 
-const queries = new GraphQLObjectType({
-  name: 'UserQuery',
-  description: 'Queries for user model',
+  users: {
+    description: 'Get all users',
+    type: new GraphQLList(UserType),
+    resolve: async (root: any, args: any) => {
+      return await UserController.getByProps({});    
+    },
+  },
+};
 
-  fields: {
-    ...queryFields
-  }
-});
-
-export default queries;
+export { queryFields as UserQueryFields };

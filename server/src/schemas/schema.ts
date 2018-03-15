@@ -1,9 +1,8 @@
 import { GraphQLSchema } from 'graphql';
-import Queries from './queries';
+import { Queries }from './queries';
 
 const schema = new GraphQLSchema({
-  query: Queries
-
+  query: Queries,
 });
 
-export default schema;
+export { schema as GraphqlSchema };
