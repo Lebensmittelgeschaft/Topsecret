@@ -1,8 +1,14 @@
-import { GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
+import { 
+  GraphQLString,
+  GraphQLList,
+  GraphQLNonNull,
+  Thunk,
+  GraphQLFieldConfigMap
+} from 'graphql';
 import { UserType } from './user.type';
 import { UserController } from '../../user/user.controller';
 
-const queryFields = {
+const queryFields: Thunk<GraphQLFieldConfigMap<any, any>> = {
   
   user: {
     description: 'Get user by id',
@@ -10,7 +16,7 @@ const queryFields = {
     args: {
       id: { type: new GraphQLNonNull(GraphQLString) },
     },
-    resolve: async (root: any, args: any) => {      
+    resolve: async (root, args) => {      
       return await UserController.getOneByProps({ _id: args.id });      
     },
   },
@@ -18,7 +24,7 @@ const queryFields = {
   users: {
     description: 'Get all users',
     type: new GraphQLList(UserType),
-    resolve: async (root: any, args: any) => {
+    resolve: async (root, args) => {
       return await UserController.getByProps({});    
     },
   },

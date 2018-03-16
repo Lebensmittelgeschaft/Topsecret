@@ -1,4 +1,8 @@
-import { GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull
+} from 'graphql';
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -8,17 +12,13 @@ const userType = new GraphQLObjectType({
     id: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Hashed id of the user',
-      resolve: (root) => {
-        return root._id;
-      },
+      resolve: root => root._id,      
     },
 
     nickname: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Nickname of the user',
-      resolve: (root) => {
-        return root.nickname;
-      },
+      resolve: root => root.nickname,      
     },
   },
 });

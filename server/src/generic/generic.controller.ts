@@ -17,12 +17,12 @@ export function controllerFactory<T extends IBaseModel>(service : BaseService<T>
       return BaseController.service.getOneByProps(props);
     }
     
-    static save(user: T) {
-      return BaseController.service.save(user);
+    static save(model: T) {
+      return BaseController.service.save(model);
     }
   
-    static update(user: T) {
-      return BaseController.service.update(user);
+    static update(model: T) {
+      return BaseController.service.update(model);
     }
   
     static deleteById(id: string) {

@@ -1,5 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { UserQueryFields } from './user/user.queries';
+import { SecretQueriesFields } from './secret/secret.queries';
+
 
 const query = new GraphQLObjectType({
   name: 'Query',
@@ -7,6 +9,7 @@ const query = new GraphQLObjectType({
 
   fields: {
     ...UserQueryFields,
+    ...SecretQueriesFields,
   },
 
 });

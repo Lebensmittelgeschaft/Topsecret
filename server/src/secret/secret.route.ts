@@ -17,7 +17,7 @@ export const secretRouter = Router();
 secretRouter.get('', async (req, res, next) => {
   if (req.query.page && Number.isInteger(+req.query.page)) {
     try {
-      const secrets = await SecretController.getSecretsPagination({}, +req.query.page);
+      const secrets = await SecretController.getSecretsPagination(+req.query.page);
       if (secrets) res.json(secrets);
       else res.sendStatus(404);
     } catch (err) {

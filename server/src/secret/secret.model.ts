@@ -6,8 +6,8 @@ const pluginRefValidator = require('mongoose-id-validator');
 
 export interface ISecret extends IBaseModel {
   publisher: string;
-  secretText: string;
-  comments: { postBy: string, comment: string, timestamp?: number }[];
+  text: string;
+  comments: { postBy: string, text: string, timestamp?: number }[];
   likes: number;
   dislikes: number;
   timestamp: number;
@@ -19,14 +19,14 @@ const secretSchema = new Schema({
     ref: 'User',
     required: true,
   },
-  secretText: {
+  text: {
     type: String,
     required: true,
   },
   comments: {
     type: [{
       postBy: { type: String, ref: 'User' },
-      comment: String,
+      text: String,
       timestamp: { type: Number, default: new Date().getTime() },
     }],
     default: [],

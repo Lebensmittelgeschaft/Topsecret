@@ -8,16 +8,16 @@ const baseController = controllerFactory<ISecret>(new SecretService());
 export class SecretController extends baseController {
 
     // Hold the amount of documents to pull by the pagination
-    private static readonly PAGE_SIZE = 30;
+    private static readonly PAGE_SIZE = 3;
 
     /**
      * Get secrets by page slices from the db
      * 
-     * @param props - Properties of the secrets to find
      * @param page - Number of page slice to get
+     * @param props? - Properties of the secrets to find (Optional)
      */
-    static getSecretsPagination(props: Partial<ISecret>, page: number) {
+    static getSecretsPagination(page: number, props?: Partial<ISecret>) {
         const documents_skipped = (page - 1) * SecretController.PAGE_SIZE;
-        return baseController.getByProps(props).limit(documents_skipped).skip(page);
+        return baseController.getByProps(props || {}).limit(documents_skipped).skip(page);
     }
 }

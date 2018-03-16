@@ -29,11 +29,11 @@ describe('Secret Service', () => {
 
     testSecret = await new SecretModel({
       publisher: testUser._id,
-      secretText: 'Publish secret',
+      text: 'Publish secret',
     }).save();
     testSecret2 = await new SecretModel({
       publisher: testUser2._id,
-      secretText: 'Second publish secret',
+      text: 'Second publish secret',
     }).save();    
   });
 
@@ -45,11 +45,11 @@ describe('Secret Service', () => {
   it('Should save valid secret', () => {
     const secret = new SecretModel({
       publisher: testUser._id,
-      secretText: 'Hello world! this is my secret',
+      text: 'Hello world! this is my secret',
     });
     const secret2 = new SecretModel({
       publisher: testUser2._id,
-      secretText: 'lol',
+      text: 'lol',
     });
 
     return Promise.all([
@@ -63,8 +63,8 @@ describe('Secret Service', () => {
   it('Should save secret with default values', () => {
     const preDefinedSecret = new SecretModel({
       publisher: testUser._id,
-      secretText: 'This will have default values',
-      comments: [{ postBy: testUser2._id, comment: 'Will Not Exist', timestamp: 123456 }],
+      text: 'This will have default values',
+      comments: [{ postBy: testUser2._id, text: 'Will Not Exist', timestamp: 123456 }],
       likes: 99999,
       dislikes: 1,
       timestamp: 0,
@@ -82,11 +82,11 @@ describe('Secret Service', () => {
   it('Should not save invalid secret', () => {
     const invalidSecret = new SecretModel({
       publisher: 'notexist',
-      secretText: 'This will not saved',
+      text: 'This will not saved',
     });
 
     const invalidSecret2 = new SecretModel({
-      secretText: 'hehehehe',
+      text: 'hehehehe',
     });
 
     return Promise.all([
@@ -117,23 +117,23 @@ describe('Secret Service', () => {
       expect(secretService.getByProps({ _id: 'unexist' })).to.be.rejectedWith(mongoose.CastError),
       expect(secretService.getByProps({ publisher: 'unexist' })).to.eventually.be.an('array')
                                                                 .that.is.empty,
-      expect(secretService.getOneByProps({ secretText: 'wmeqoemwo' })).to.eventually.not.exist,
+      expect(secretService.getOneByProps({ text: 'wmeqoemwo' })).to.eventually.not.exist,
       expect(secretService.getOneByProps({ publisher: 'ewqewqeqw' })).to.eventually.not.exist,
     ]);
   });
 
   it('Should update existing secret', () => {
     const secretTextUpdate = 'Hey this is updated!';
-    const comment = { postBy: testUser._id, comment: 'The update worked!' };
+    const comment = { postBy: testUser._id, text: 'The update worked!' };
     const updatedSecret = secretService.update({
       _id: testSecret._id,
-      secretText: secretTextUpdate,
+      text: secretTextUpdate,
       comments: [comment],
     });
 
     return Promise.all([
       expect(updatedSecret).to.eventually.exist,
-      expect(updatedSecret).to.eventually.have.property('secretText', secretTextUpdate),
+      expect(updatedSecret).to.eventually.have.property('text', secretTextUpdate),
       expect(updatedSecret).to.eventually
                            .have.nested.property('comments[0].postBy', comment.postBy),
                            
@@ -141,7 +141,7 @@ describe('Secret Service', () => {
   });
 
   it('Should not update unexistng secret', () => {
-    return expect(secretService.update({ _id: 'exist', secretText: 'never' }))
+    return expect(secretService.update({ _id: 'exist', text: 'never' }))
                                        .to.be.rejectedWith(mongoose.CastError);
   });
 
