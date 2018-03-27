@@ -20,4 +20,8 @@ export class SecretController extends baseController {
         const documents_skipped = (page - 1) * SecretController.PAGE_SIZE;
         return baseController.getByProps(props || {}).limit(SecretController.PAGE_SIZE).skip(documents_skipped);
     }
+
+    static addComment(secretId: string, postBy: string, text: string) {
+        return baseController.service.addComment(secretId, postBy, text);
+    }
 }

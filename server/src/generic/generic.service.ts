@@ -35,7 +35,7 @@ export class BaseService<T extends IBaseModel> {
 
   // Update Methods
 
-  update(props: Partial<T>) {
+  update(props: any) {
     if (!props._id) return null;    
     const parsedProps = props ? props as Object : {};    
     return this.model.findOneAndUpdate({ _id: props._id }, parsedProps, { new: true });

@@ -21,8 +21,8 @@ export function controllerFactory<T extends IBaseModel>(service : BaseService<T>
       return BaseController.service.save(model);
     }
   
-    static update(model: T) {
-      return BaseController.service.update(model);
+    static update(props: any) {
+      return BaseController.service.update(props);
     }
   
     static deleteById(id: string) {

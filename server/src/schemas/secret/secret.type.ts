@@ -79,4 +79,4 @@ const secretType = new GraphQLObjectType({
   },
 });
 
-export { secretType as SecretType };
+export { secretType as SecretType, commentType as CommentType };

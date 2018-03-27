@@ -15,10 +15,10 @@ const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     description: "Create new user in the db",    
     args: {
       id: {
-        type: new GraphQLNonNull(GraphQLString)
+        type: UserType.getFields().id.type
       },
       nickname: {
-        type: new GraphQLNonNull(GraphQLString)
+        type: UserType.getFields().nickname.type
       },
     },
     resolve: async (root, args) => {
@@ -32,10 +32,10 @@ const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     description: "Update user nickname in the db",
     args: {
       id: {
-        type: new GraphQLNonNull(GraphQLString)
+        type: UserType.getFields().id.type,
       },
       newNickname: {
-        type: new GraphQLNonNull(GraphQLString)
+        type: UserType.getFields().nickname.type,
       },    
     },
     resolve: async (root, args) => {
