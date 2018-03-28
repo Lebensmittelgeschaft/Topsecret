@@ -61,13 +61,13 @@ const secretType = new GraphQLObjectType({
     likes: {
       type: GraphQLInt,
       description: 'Number of likes of the secret',
-      resolve: root => root.likes,
+      resolve: root => root.likes.length,
     },
 
     dislikes: {
       type: GraphQLInt,
       description: 'Number of dislikes of the secret',
-      resolve: root => root.dislikes,
+      resolve: root => root.dislikes.length,
     },
 
     timestamp: {

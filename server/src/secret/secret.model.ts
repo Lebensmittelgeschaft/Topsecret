@@ -8,8 +8,8 @@ export interface ISecret extends IBaseModel {
   publisher: string;
   text: string;
   comments: { postBy: string, text: string, timestamp?: number }[];
-  likes: number;
-  dislikes: number;
+  likes: string[];
+  dislikes: string[];
   timestamp: number;
 }
 
@@ -32,12 +32,12 @@ const secretSchema = new Schema({
     default: [],
   },
   likes: {
-    type: Number,
-    default: 0,
+    type: [{ type: String, ref: 'User', required: true }],
+    default: [],
   },
   dislikes: {
-    type: Number,
-    default: 0,
+    type: [{ type: String, ref: 'User', required: true }],
+    default: [],
   },
   timestamp: {
     type: Number,
@@ -48,8 +48,8 @@ const secretSchema = new Schema({
 // Used for avoid from client to modify the timestamp, likes, dislikes and comments of the secret
 secretSchema.pre('save', function (this: ISecret, next) {
   this.timestamp = new Date().getTime();
-  this.likes = 0;
-  this.dislikes = 0;
+  this.likes = [];
+  this.dislikes = [];
   this.comments = [];
   next();
 });

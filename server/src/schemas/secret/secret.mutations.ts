@@ -46,6 +46,38 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any,any>> = {
       return await SecretController.addComment(args.secretId, args.postBy, args.text);
     },
   },
+
+  addLike: {
+    description: 'Add like to secret',
+    type: SecretType,
+    args: {
+      secretId: {
+        type: SecretType.getFields().id.type as GraphQLInputType,
+      },
+      userId: {
+        type: SecretType.getFields().publisher.type as GraphQLInputType,
+      },
+    },
+    resolve: async (root, args) => {
+      return await SecretController.addLike(args.secretId, args.userId);      
+    },
+  },
+
+  addDislike: {
+    description: 'Add dislike to secret',
+    type: SecretType,
+    args: {
+      secretId: {
+        type: SecretType.getFields().id.type as GraphQLInputType,
+      },
+      userId: {
+        type: SecretType.getFields().publisher.type as GraphQLInputType,
+      },
+    },
+    resolve: async (root, args) => {
+      return await SecretController.addDislike(args.secretId, args.userId);
+    },
+  },
 };
 
 export { secretMutations as SecretMutations };

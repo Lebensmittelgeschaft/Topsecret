@@ -22,7 +22,35 @@ export class SecretController extends baseController {
                                                  .skip(skippedDocuments);
   }
 
+  /**
+   * Add a comment to an existing secret
+   * 
+   * @param secretId - the secret id to add comment to 
+   * @param postBy - the user id who comment
+   * @param text - text of the comment
+   */
   static addComment(secretId: string, postBy: string, text: string) {
     return (<SecretService>baseController.service).addComment(secretId, postBy, text);
   }
+
+  /**
+   * Add a like to an existing secret
+   * 
+   * @param secretId - the secret id to add like to
+   * @param userId - the id of the user who liked the secret
+   */
+  static addLike(secretId: string, userId: string) {
+    return (<SecretService>baseController.service).toggleLike(secretId, userId, 'like');
+  }
+
+  /**
+   * Add a dislike to an existing secret
+   * 
+   * @param secretId - the secret id to add dislike to
+   * @param userId - the id of the user who disliked the secret
+   */
+  static addDislike(secretId: string, userId: string) {
+    return (<SecretService>baseController.service).toggleLike(secretId, userId, 'dislike');
+  }
+
 }

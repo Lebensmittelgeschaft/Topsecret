@@ -40,7 +40,7 @@ const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> =  {
       },    
     },
     resolve: async (root, args) => {
-      const updatedUser = new UserModel({ _id: args.id, nickname: args.newNickname });
+      const updatedUser = { _id: args.id, nickname: args.newNickname };
       return await UserController.update(updatedUser);
     },
   },
