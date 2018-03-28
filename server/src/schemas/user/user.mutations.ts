@@ -2,23 +2,24 @@ import {
   GraphQLNonNull,
   GraphQLString,
   Thunk,
-  GraphQLFieldConfigMap 
+  GraphQLFieldConfigMap,
+  GraphQLInputType,
 } from 'graphql';
 import { UserType } from './user.type';
 import { UserController } from '../../user/user.controller';
 import { user as UserModel } from '../../user/user.model';
 
-const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
+const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> =  {
 
   createUser: {
+    description: 'Create new user in the db',    
     type: UserType,
-    description: "Create new user in the db",    
     args: {
       id: {
-        type: UserType.getFields().id.type
+        type: UserType.getFields().id.type as GraphQLInputType,
       },
       nickname: {
-        type: UserType.getFields().nickname.type
+        type: UserType.getFields().nickname.type as GraphQLInputType,
       },
     },
     resolve: async (root, args) => {
@@ -28,18 +29,18 @@ const userMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
   },
 
   updateUserNickname: {
+    description: 'Update user nickname in the db',
     type: UserType,
-    description: "Update user nickname in the db",
     args: {
       id: {
-        type: UserType.getFields().id.type,
+        type: UserType.getFields().id.type as GraphQLInputType,
       },
       newNickname: {
-        type: UserType.getFields().nickname.type,
+        type: UserType.getFields().nickname.type as GraphQLInputType,
       },    
     },
     resolve: async (root, args) => {
-      const updatedUser = new UserModel({ _id: args.id, nickname: args.newNickname});
+      const updatedUser = new UserModel({ _id: args.id, nickname: args.newNickname });
       return await UserController.update(updatedUser);
     },
   },

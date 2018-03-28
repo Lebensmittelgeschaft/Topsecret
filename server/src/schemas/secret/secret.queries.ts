@@ -4,7 +4,8 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull  
+  GraphQLNonNull,
+  GraphQLInputType,  
 } from 'graphql';
 import { SecretType } from './secret.type';
 import { SecretController } from './../../secret/secret.controller';
@@ -16,7 +17,7 @@ const queryFields: Thunk<GraphQLFieldConfigMap<any,any>> = {
     description: 'Get specific secret by secret id',
     args: {
       id: {
-        type: new GraphQLNonNull(GraphQLString)
+        type: SecretType.getFields().id.type as GraphQLInputType,
       },
     },
     resolve: async (root, args) => {
@@ -29,7 +30,7 @@ const queryFields: Thunk<GraphQLFieldConfigMap<any,any>> = {
     description: 'Get secrets by pagination',
     args: {
       pageNum: {
-        type: GraphQLInt
+        type: GraphQLInt,
       },
     },
     resolve: async (root, args) => {

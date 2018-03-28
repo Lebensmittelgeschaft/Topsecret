@@ -10,7 +10,7 @@ export class SecretService extends BaseService<ISecret> {
   addComment(secretId: string, postBy: string, text: string) {
     return this.update({
       _id: secretId,
-      $push: { comments: { postBy: postBy, text: text, timestamp: Date.now() } }
+      $push: { comments: { postBy, text, timestamp: Date.now() } },
     });
   }
 }

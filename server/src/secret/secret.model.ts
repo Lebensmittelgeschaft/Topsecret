@@ -25,8 +25,8 @@ const secretSchema = new Schema({
   },
   comments: {
     type: [{
-      postBy: { type: String, ref: 'User' },
-      text: String,
+      postBy: { type: String, ref: 'User', required: true },
+      text: { type: String, required: true },
       timestamp: { type: Number, default: new Date().getTime() },
     }],
     default: [],
