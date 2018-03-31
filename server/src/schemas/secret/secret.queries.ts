@@ -40,4 +40,4 @@ const queryFields: Thunk<GraphQLFieldConfigMap<any,any>> = {
   },
 };
 
-export { queryFields as SecretQueriesFields };
+export { queryFields as SecretQueryFields };

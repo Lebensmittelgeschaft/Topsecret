@@ -11,6 +11,9 @@ import { GraphqlSchema } from './schemas/schema';
 
 const app = express();
 
+// Adding debugging output in dev mode - shows all mongo queries
+if (process.env.NODE_ENV === 'dev') mongoose.set('debug', true);
+
 // Attaching node promise to the mongoose promise
 (<any>mongoose).Promise = global.Promise;
 

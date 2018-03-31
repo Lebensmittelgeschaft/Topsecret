@@ -37,8 +37,6 @@
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.1",
     "mongoose": "^4.13.9",
-    "mongoose-id-validator": "^0.4.3",
-    "mongoose-unique-validator": "^1.0.6",
     "morgan": "^1.9.0"
   },
   "devDependencies": {
@@ -49,7 +47,6 @@
     "@types/graphql": "^0.12.4",
     "@types/mocha": "^2.2.46",
     "@types/mongoose": "^4.7.32",
-    "@types/mongoose-unique-validator": "^1.0.1",
     "@types/morgan": "^1.7.35",
     "@types/node": "^9.3.0",
     "chai": "^4.1.2",

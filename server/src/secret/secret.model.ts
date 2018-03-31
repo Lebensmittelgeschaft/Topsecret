@@ -1,8 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { IBaseModel } from '../generic/generic.interface';
-
-// Used require because this package don't have types declared
-const pluginRefValidator = require('mongoose-id-validator');
+import { userRefValidator } from './../user/user.validator';
 
 export interface ISecret extends IBaseModel {
   publisher: string;
@@ -13,11 +11,12 @@ export interface ISecret extends IBaseModel {
   timestamp: number;
 }
 
-const secretSchema = new Schema({
+const secretSchema: Schema = new Schema({
   publisher: {
     type: String,
     ref: 'User',
     required: true,
+    validator: userRefValidator,
   },
   text: {
     type: String,
@@ -25,18 +24,30 @@ const secretSchema = new Schema({
   },
   comments: {
     type: [{
-      postBy: { type: String, ref: 'User', required: true },
+      postBy: { type: String, ref: 'User', required: true, validator: userRefValidator },
       text: { type: String, required: true },
       timestamp: { type: Number, default: new Date().getTime() },
     }],
     default: [],
   },
   likes: {
-    type: [{ type: String, ref: 'User', required: true }],
+    type: [{
+      type: String,
+      ref: 'User', 
+      required: true,
+      validator: userRefValidator,      
+      unique: true,
+    }],
     default: [],
   },
   dislikes: {
-    type: [{ type: String, ref: 'User', required: true }],
+    type: [{
+      type: String,
+      ref: 'User',
+      required: true,
+      validator: userRefValidator,
+      unique: true,
+    }],
     default: [],
   },
   timestamp: {
@@ -53,8 +64,5 @@ secretSchema.pre('save', function (this: ISecret, next) {
   this.comments = [];
   next();
 });
-
-// Add plugin for validating the existance of referenced values
-secretSchema.plugin(pluginRefValidator);
 
 export const secret = model<ISecret>('Secret', secretSchema);

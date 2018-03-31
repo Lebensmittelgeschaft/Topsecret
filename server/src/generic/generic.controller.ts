@@ -9,7 +9,7 @@ export function controllerFactory<T extends IBaseModel>(service : BaseService<T>
 
     protected static service = service;
 
-    static getByProps(props: Partial<T>) {
+    static getByProps(props: any) {
       return BaseController.service.getByProps(props);
     }
 

@@ -31,12 +31,12 @@ describe('Message Serivce', () => {
     testMessage = await new MessageModel({
       sender: testUser._id,
       receiver: testUser2._id,
-      messageText: 'Whatsup',
+      text: 'Whatsup',
     }).save();
     testMessage2 = await new MessageModel({
       sender: testUser2._id,
       receiver: testUser._id,
-      messageText: 'Fine wat bout u',
+      text: 'Fine wat bout u',
     }).save();
   });
 
@@ -49,19 +49,19 @@ describe('Message Serivce', () => {
     const message = new MessageModel({
       sender: testUser._id,
       receiver: testUser2._id,
-      messageText: 'Hello world',
+      text: 'Hello world',
     });
     const message2 = new MessageModel({
       sender: testUser._id,
       receiver: testUser2._id,
-      messageText: 'Hey its me again',
+      text: 'Hey its me again',
     });
 
     return Promise.all([
       expect(messageService.save(message)).to.eventually.exist
-                                          .and.have.property('messageText', message.messageText),
+                                          .and.have.property('text', message.text),
       expect(messageService.save(message2)).to.eventually.exist
-                                           .and.have.property('messageText', message2.messageText),
+                                           .and.have.property('text', message2.text),
 
     ]);    
   });
@@ -71,7 +71,7 @@ describe('Message Serivce', () => {
       sender: testUser._id,
     });
     const invalidMessage2 = new MessageModel({
-      messageText: 'Hey I will not saved',
+      text: 'Hey I will not saved',
     });
     
     return Promise.all([
@@ -108,12 +108,12 @@ describe('Message Serivce', () => {
 
   it('Should update existing message', () => {
     const textMessage = 'Text Changed';
-    return expect(messageService.update({ _id: testMessage2._id, messageText: textMessage }))
-                  .to.eventually.exist.and.have.property('messageText', textMessage);
+    return expect(messageService.update({ _id: testMessage2._id, text: textMessage }))
+                  .to.eventually.exist.and.have.property('text', textMessage);
   });
 
   it('Should not update unexisting message', () => {
-    return expect(messageService.update({ _id: 'reqwqo', messageText: 'nevermind' }))
+    return expect(messageService.update({ _id: 'reqwqo', text: 'nevermind' }))
                   .to.be.rejectedWith(mongoose.CastError);
   });
 

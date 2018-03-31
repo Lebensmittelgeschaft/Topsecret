@@ -50,7 +50,7 @@ export class SecretService extends BaseService<ISecret> {
     return this.update({
       _id: secretId,
       $pull: pullQuery,
-      $push: pushQuery,
+      $addToSet: pushQuery,
     });
   }
 

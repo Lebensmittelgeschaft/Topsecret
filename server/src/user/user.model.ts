@@ -1,23 +1,25 @@
 import { Schema, model } from 'mongoose';
 import { IBaseModel } from '../generic/generic.interface';
+import { userUniqueValidator, userNicknameValidator } from './user.validator';
 import * as crypto from 'crypto';
-import * as uniqueValidator from 'mongoose-unique-validator';
 
 export interface IUser extends IBaseModel {
   _id: string;
   nickname: string;
 }
 
-const userSchema = new Schema({
+const userSchema: Schema = new Schema({
   _id: {
     type: String,
     unique: true,
     required: true,
+    validator: userUniqueValidator,
   },
   nickname: {
     type: String,
     unique: true,        
     required: true,
+    validator: userNicknameValidator,
   },       
 });
 
@@ -32,9 +34,5 @@ userSchema.pre('save', function save(this: IUser, next) {
   this._id = generateHash(this._id);
   next();
 });
-
-// Add unique validator for unique field in model
-// TODO - write own unique validator than using the npm package for it
-userSchema.plugin(uniqueValidator);
 
 export const user = model<IUser>('User', userSchema);

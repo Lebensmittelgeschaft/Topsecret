@@ -17,7 +17,7 @@ export class BaseService<T extends IBaseModel> {
   
   // Get Methods
 
-  getByProps(props: Partial<T>) {
+  getByProps(props: any) {
     const parsedProps = props ? props as Object : {} ;
     return this.model.find(parsedProps);    
   }
@@ -25,6 +25,10 @@ export class BaseService<T extends IBaseModel> {
   getOneByProps(props: Partial<T>) {
     const parsedProps = props ? props as Object : {};
     return this.model.findOne(parsedProps);    
+  }
+
+  aggregator(props: any) {
+    return this.model.aggregate(props);
   }
 
   // Save Methods

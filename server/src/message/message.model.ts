@@ -1,28 +1,28 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IBaseModel } from '../generic/generic.interface';
+import { userRefValidator } from './../user/user.validator';
 
-// Used require because this package don't have types declared
-const pluginRefValidator = require('mongoose-id-validator');
-
-export interface IMessage extends Document {
+export interface IMessage extends IBaseModel {
   sender: string;
   receiver: string;
-  messageText: string;
+  text: string;
   timestamp: number;
 }
 
-const messageSchema = new Schema({
+const messageSchema: Schema = new Schema({
   sender: {
     type: String,
     ref: 'User',
     required: true,
+    validator: userRefValidator,
   },
   receiver: {
     type: String,
     ref: 'User',
     required: true,
+    validator: userRefValidator,
   },
-  messageText: {
+  text: {
     type: String,
     required: true,
   },
@@ -37,7 +37,5 @@ messageSchema.pre('save', function (this: IMessage, next) {
   this.timestamp = new Date().getTime();
   next();
 });
-
-messageSchema.plugin(pluginRefValidator);
 
 export const message = model<IMessage>('Message', messageSchema);
