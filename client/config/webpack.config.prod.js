@@ -13,6 +13,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const RelayCompilerWebpackPlugin = require('relay-compiler-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -219,6 +220,17 @@ module.exports = {
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
+          {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: require.resolve('babel-loader'),
+              options: {
+                presets: ['react-app'],
+                plugins: ['relay']
+              }
+            }
+          },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
@@ -341,6 +353,11 @@ module.exports = {
       async: false,
       tsconfig: paths.appTsConfig,
       tslint: paths.appTsLint,
+    }),
+    new RelayCompilerWebpackPlugin({
+      schema: path.resolve(__dirname, '../schema.graphql'), // or schema.json or a GraphQLSchema instance
+      src: path.resolve(__dirname, '../src'),
+      extensions: ['js'],
     }),
   ],
   // Some libraries import Node modules but don't use them in the browser.

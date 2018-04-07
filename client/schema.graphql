@@ -1,0 +1,125 @@
+"""Comment on secret model"""
+type Comment {
+  """Id of the user who post the comment"""
+  postBy: String!
+
+  """Actual text of the comment"""
+  text: String!
+
+  """Timestamp of the date the comment published"""
+  timestamp: String
+}
+
+"""Last message model of conversation between 2 users"""
+type LastMessage {
+  """User id of the contact in the conversation"""
+  contact: String!
+
+  """Message object model of the last message in the conversation"""
+  message: Message
+}
+
+"""Message object model"""
+type Message {
+  """User id of the sender of the message"""
+  sender: String!
+
+  """User id of the receiver of the message"""
+  receiver: String!
+
+  """Text of the message"""
+  text: String!
+
+  """Timestamp of the message"""
+  timestamp: String
+}
+
+"""Main mutation contains all models mutations"""
+type Mutation {
+  """Create new user in the db"""
+  createUser(id: ID!, nickname: String!): User
+
+  """Update user nickname in the db"""
+  updateUserNickname(id: ID!, newNickname: String!): User
+
+  """Create secret object model"""
+  createSecret(publisher: String!, text: String!): Secret
+
+  """Add comment to secret"""
+  addComment(secretId: ID!, postBy: String!, text: String!): Secret
+
+  """Add like to secret"""
+  addLike(secretId: ID!, userId: String!): Secret
+
+  """Add dislike to secret"""
+  addDislike(secretId: ID!, userId: String!): Secret
+
+  """Create message object model"""
+  createMessage(sender: String!, receiver: String!, text: String!): Message
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Main query contains all models queries"""
+type Query {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Get user by id"""
+  user(id: ID!): User
+
+  """Get all users"""
+  users: [User]
+
+  """Get specific secret by secret id"""
+  secert(id: ID!): Secret
+
+  """Get secrets by pagination"""
+  secrets(pageNum: Int): [Secret]
+
+  """Get conversation messages of user with pagination"""
+  messages(userOne: String!, userTwo: String!, pageNum: Int!): [Message]
+
+  """Get last message from all user's conversations"""
+  lastMessages(userId: String!): [LastMessage]
+}
+
+"""Secret object model"""
+type Secret implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """The user id who publish the secret"""
+  publisher: String!
+
+  """The text of the secret"""
+  text: String!
+
+  """Array of the comment published on secret"""
+  comments: [Comment]
+
+  """Number of likes of the secret"""
+  likes: Int
+
+  """Number of dislikes of the secret"""
+  dislikes: Int
+
+  """Timestamp in milliseconds of date the secret published"""
+  timestamp: String
+}
+
+"""User object model"""
+type User implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """Nickname of the user"""
+  nickname: String!
+}

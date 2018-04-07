@@ -3,6 +3,7 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import * as graphqlHTTP from 'express-graphql';
+import * as cors from 'cors';
 import { config } from './config';
 import { userRouter as UserRoute } from './user/user.route';
 import { secretRouter as SecretRoute } from './secret/secret.route';
@@ -30,8 +31,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger(process.env.NODE_ENV || 'dev'));
 
+// Cross-origin-resource-share policy 
+// Need to be configured for real origins and headers like 'Authorization'
+const corsOptions = {
+  origin: 'http://localhost:3001',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+};
+
 // GraphQL Route
-app.use('/graphql', (req, res) => {
+app.use('/graphql', cors(corsOptions), (req, res) => {
   graphqlHTTP({
     schema: GraphqlSchema,
     graphiql: true,

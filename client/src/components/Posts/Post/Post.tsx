@@ -8,14 +8,19 @@ import ThumbDown from 'material-ui-icons/ThumbDown';
 import ThumbUp from 'material-ui-icons/ThumbUp';
 import ModeComment from 'material-ui-icons/ModeComment';
 import AccessTime from 'material-ui-icons/AccessTime';
+import { createFragmentContainer } from 'react-relay';
+import { postFragment } from '../../../queries/FeedQuery';
 
 export interface PostProps {
-  publisher: string;
-  secretText: string;
-  comments: { postBy: string, comment: string, timestamp?: number }[];
-  likes: number;
-  dislikes: number;
-  timestamp: number;
+  secret: {
+    id: string;
+    publisher: string;
+    text: string;
+    comments: { postBy: string, text: string, timestamp?: number }[];
+    likes: number;
+    dislikes: number;
+    timestamp: number;
+  }; 
 }
 
 export interface PostState {
@@ -45,18 +50,18 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
       <Card className={this.props.classes.post}>
         <CardContent>
           <Typography align="center" variant="title" gutterBottom={true}>
-            {this.props.secretText}
+            {this.props.secret.text}
           </Typography>
           <Grid container={true} direction="row" justify="space-between" alignItems="center">
             <Grid item={true}>
               <Typography align="left" variant="body1">
                 <AccessTime/>
-                {new Date(this.props.timestamp).toLocaleString()}
+                {new Date(this.props.secret.timestamp).toLocaleString()}
               </Typography>
             </Grid>
             <Grid item={true}>
               <Typography align="right" variant="body2">
-                {this.props.publisher} 
+                {this.props.secret.publisher} 
               </Typography>
             </Grid>
           </Grid>
@@ -77,17 +82,17 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
             <Grid container={true} direction="row" justify="space-around" alignItems="center">
               <Grid item={true}>
                 <Typography variant="caption">
-                  {this.props.comments.length}
+                  {this.props.secret.comments.length}
                 </Typography>
               </Grid>
               <Grid item={true}>
                 <Typography variant="caption">
-                  {this.props.dislikes}
+                  {this.props.secret.dislikes}
                 </Typography>
               </Grid>
               <Grid item={true}>
                 <Typography variant="caption">
-                  {this.props.likes}
+                  {this.props.secret.likes}
                 </Typography>
               </Grid>
             </Grid>
@@ -98,4 +103,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
   }
 }
 
-export default withStyles(style)(Post);
+export default createFragmentContainer(
+  withStyles(style)(Post),
+  postFragment
+);

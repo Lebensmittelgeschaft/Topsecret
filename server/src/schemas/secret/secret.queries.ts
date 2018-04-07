@@ -7,9 +7,9 @@ import {
   GraphQLNonNull,
   GraphQLInputType,  
 } from 'graphql';
+
 import { SecretType } from './secret.type';
 import { SecretController } from './../../secret/secret.controller';
-
 
 const queryFields: Thunk<GraphQLFieldConfigMap<any,any>> = {
   secert: {

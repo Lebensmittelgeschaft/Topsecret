@@ -12,6 +12,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const RelayCompilerWebpackPlugin = require('relay-compiler-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -193,6 +194,17 @@ module.exports = {
               },
             ],
           },
+          {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: require.resolve('babel-loader'),
+              options: {
+                presets: ['react-app'],
+                plugins: ['relay']
+              }
+            }
+          },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
@@ -255,6 +267,11 @@ module.exports = {
       tsconfig: paths.appTsConfig,
       tslint: paths.appTsLint,
     }),
+    new RelayCompilerWebpackPlugin({
+      schema: path.resolve(__dirname, '../schema.graphql'), // or schema.json or a GraphQLSchema instance
+      src: path.resolve(__dirname, '../src'),
+      extensions: ['js']
+    })
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

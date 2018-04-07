@@ -1,0 +1,1 @@
+export const GRAPHQL_SERVER_ADDRESS = 'http://localhost:3000/graphql';
