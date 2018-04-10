@@ -1,0 +1,10 @@
+.logoImage {
+    width: inherit;
+    height: 60px;
+}
+
+@media (max-width: 540px) {
+    .logoImage {
+        height: 45px;
+    }
+}
