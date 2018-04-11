@@ -2,7 +2,7 @@ import { graphql } from 'react-relay';
 
 export const postFragment = graphql`
 fragment FeedQuery_secret on Secret {
-  id
+  id 
   publisher
   text
   comments {
@@ -21,13 +21,13 @@ fragment FeedQuery_posts on Query @argumentDefinitions(
     pageNum: { type: "Int" }
 ) {
     secrets(pageNum: $pageNum) {
-        ...FeedQuery_secret
+        ...FeedQuery_secret @relay(mask: false)
     }
 }
 `;
 
 export const feedQuery = graphql`
 query FeedQuery($pageNum: Int) {
-  ...FeedQuery_posts @arguments(pageNum: $pageNum)
+  ...FeedQuery_posts @arguments(pageNum: $pageNum) @relay(mask: false)
 }
 `;

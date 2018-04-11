@@ -39,7 +39,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     } else if (objResponse.props) {
                         /* tslint:disable:no-console */        
                         console.log(objResponse);
-                        return <Posts posts={objResponse.props.posts} />; 
+                        /* tslint:disable:no-any */                        
+                        return <Posts posts={objResponse.props as any} />; 
                     }
                     return <div>Loading...</div>;
                 }}

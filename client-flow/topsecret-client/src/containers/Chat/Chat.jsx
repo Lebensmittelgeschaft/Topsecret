@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import Grid from 'material-ui/Grid';
-import { Theme, withStyles, WithStyles } from 'material-ui/styles';
+import { withStyles, WithStyles } from 'material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Contacts from '../../components/Contacts/Contacts';
 import Contact from '../../components/Contacts/Contact/Contact';
@@ -13,10 +13,6 @@ type ChatProps = {
 
 }
 
-export interface ChatStyleProps {
-    chatContainer: typeof style.chatContainer;
-}
-
 type ChatState = {
 
 }
@@ -26,6 +22,10 @@ const style = (theme) => ({
         marginTop: '10%',
     }
 });
+
+export interface ChatStyleProps {
+    chatContainer: typeof style.chatContainer;
+}
 
 class Chat extends React.Component<ChatProps & WithStyles<$Keys<ChatStyleProps>>, ChatState> {
     render() {

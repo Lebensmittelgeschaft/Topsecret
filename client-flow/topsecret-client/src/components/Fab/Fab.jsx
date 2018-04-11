@@ -4,15 +4,11 @@
  */
 import * as React from 'react';
 import Button from 'material-ui/Button';
-import { Theme, withStyles, WithStyles } from 'material-ui/styles';
+import { withStyles, WithStyles } from 'material-ui/styles';
 
 type FabProps = {
     children: React.ChildrenArray<any>;
     action: ((event: SyntheticMouseEvent<HTMLElement>) => void) | void;    
-}
-
-export interface FabStyleProps {
-    fab: typeof style.fab;
 }
 
 const style = (theme) => ({
@@ -22,6 +18,10 @@ const style = (theme) => ({
         right: theme.spacing.unit * 6
     }
 });
+
+export interface FabStyleProps {
+    fab: typeof style.fab;
+}
 
 const fab = (props: FabProps & WithStyles<$Keys<FabStyleProps>>) => {
     return (

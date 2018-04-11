@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import Card, { CardContent, CardActions } from 'material-ui/Card';
-import { Theme, withStyles, WithStyles } from 'material-ui/styles';
+import { withStyles, WithStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
@@ -27,12 +27,6 @@ type PostState = {
 
 }
 
-export interface PostStyleProps {
-  post: typeof style.post;
-  postContent: typeof style.postContent;
-  postActions: typeof style.postActions;
-}
-
 const style = (theme) => ({
   post: {
     display: 'inline-block',
@@ -43,6 +37,12 @@ const style = (theme) => ({
   postActions: {
   }
 });
+
+export interface PostStyleProps {
+  post: typeof style.post;
+  postContent: typeof style.postContent;
+  postActions: typeof style.postActions;
+}
 
 class Post extends React.Component<PostProps & WithStyles<$Keys<PostStyleProps>>, PostState> {
   render() {

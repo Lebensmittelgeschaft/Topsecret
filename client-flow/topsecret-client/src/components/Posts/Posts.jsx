@@ -1,32 +1,28 @@
 // @flow
 import * as React from 'react';
 import Grid from 'material-ui/Grid';
-import { Theme, withStyles, WithStyles } from 'material-ui/styles';
+import { withStyles, WithStyles } from 'material-ui/styles';
 import Post from './Post/Post';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 // TODO: Use pagination for showing only number of posts and when scrolling
 //       down will make http request for more posts - lazy loading posts by pagination
 type PostsProps = {
-    posts: {
-        secrets: {
-            id: string;
-            publisher: string;
-            text: string;
-            comments: { postBy: string, text: string, timestamp?: number }[];
-            likes: number;
-            dislikes: number;
-            timestamp: number;
-        }[];
-    };
+    // posts: {
+    //     secrets: {
+    //         id: string;
+    //         publisher: string;
+    //         text: string;
+    //         comments: { postBy: string, text: string, timestamp?: number }[];
+    //         likes: number;
+    //         dislikes: number;
+    //         timestamp: number;
+    //     }[];
+    // };
 }
 
 type PostsState = {
     loaded: boolean;
-}
-
-export interface PostsStyleProps {
-    root: typeof style.root;
 }
 
 const style = (theme) => ({
@@ -34,6 +30,10 @@ const style = (theme) => ({
         flexGrow: 1
     }
 });
+
+export interface PostsStyleProps {
+    root: typeof style.root;
+}
 
 // const posts =
 //     [

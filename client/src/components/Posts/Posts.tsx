@@ -88,11 +88,13 @@ class Posts extends React.Component<PostsProps & WithStyles<keyof PostsStyleProp
                 justify="space-between"
                 alignItems="center"
             >
-                {this.props.posts.secrets.map((secret) => (
-                    <Grid item={true} key={secret.id}>
-                        <Post secret={secret} />
-                    </Grid>
-                ))}
+                {this.props.posts.secrets.map((secret) => {
+                    /* tslint:disable:no-console */
+                    console.log(secret);
+                    return (<Grid item={true} key={secret.id}>
+                                <Post secret={secret} />
+                            </Grid>);
+                })}
             </Grid>
         );
     }

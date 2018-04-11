@@ -1,15 +1,11 @@
 // @flow
 import * as React from 'react';
 import List, { ListSubheader } from 'material-ui/List';
-import { Theme, withStyles, WithStyles } from 'material-ui/styles';
+import { withStyles, WithStyles } from 'material-ui/styles';
 import Contact from './Contact/Contact';
 
 type ContactsProps = {
     children?: React.ChildrenArray<React.Element<typeof Contact>>;
-}
-
-export interface ContactsStyleProps {
-    contactList: typeof style.contactList;
 }
 
 const style = {
@@ -17,6 +13,10 @@ const style = {
         borderRight: '2px solid grey'
     }
 };
+
+export interface ContactsStyleProps {
+    contactList: typeof style.contactList;
+}
 
 const contacts = (props: ContactsProps & WithStyles<$Keys<ContactsStyleProps>>) => {
     return (
