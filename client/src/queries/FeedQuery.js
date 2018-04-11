@@ -21,13 +21,14 @@ fragment FeedQuery_posts on Query @argumentDefinitions(
     pageNum: { type: "Int" }
 ) {
     secrets(pageNum: $pageNum) {
-        ...FeedQuery_secret @relay(mask: false)
+        id
+        ...FeedQuery_secret
     }
 }
 `;
 
 export const feedQuery = graphql`
 query FeedQuery($pageNum: Int) {
-  ...FeedQuery_posts @arguments(pageNum: $pageNum) @relay(mask: false)
+  ...FeedQuery_posts @arguments(pageNum: $pageNum)
 }
 `;

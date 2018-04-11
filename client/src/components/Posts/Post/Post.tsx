@@ -19,7 +19,7 @@ export interface PostProps {
     comments: { postBy: string, text: string, timestamp?: number }[];
     likes: number;
     dislikes: number;
-    timestamp: number;
+    timestamp: string;
   }; 
 }
 
@@ -56,7 +56,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
             <Grid item={true}>
               <Typography align="left" variant="body1">
                 <AccessTime/>
-                {new Date(this.props.secret.timestamp).toLocaleString()}
+                {new Date(+this.props.secret.timestamp).toLocaleString()}
               </Typography>
             </Grid>
             <Grid item={true}>
