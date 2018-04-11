@@ -1,10 +1,10 @@
 // @flow
 import * as React from 'react';
 import List, { ListSubheader } from 'material-ui/List';
-import type { ChatPreviewProps } from './ChatPreview/ChatPreview';
+import ChatPreview from './ChatPreview/ChatPreview';
 
 type ChatsPreviewProps = {    
-    children?: React.ChildrenArray<ChatPreviewProps>;
+    children?: React.ChildrenArray<React.Element<typeof ChatPreview>>;
 }
 
 const chatsPreview = (props: ChatsPreviewProps) => {

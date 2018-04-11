@@ -102,11 +102,11 @@ class Posts extends React.Component<PostsProps & WithStyles<$Keys<PostsStyleProp
 export default createFragmentContainer(
     withStyles(style)(Posts),
     graphql`
-    fragment FeedQuery_posts on Query @argumentDefinitions(
+    fragment Posts_posts on Query @argumentDefinitions(
         pageNum: { type: "Int" }
     ) {
         secrets(pageNum: $pageNum) {
-            ...FeedQuery_secret
+            ...Post_secret
         }
     }
     `

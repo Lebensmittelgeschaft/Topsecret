@@ -13,12 +13,17 @@
     "relay-runtime": "^1.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "npm run relay-conf && react-scripts start",
+    "build": "npm run relay-conf && react-scripts build",
+    "test": "npm run relay-conf && react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "incl-babel": "node ./scripts/babelPluginInclude.js",
+    "compile-relay": "relay-compiler --src ./src --schema ./schema/schema.graphql --extensions=jsx --extensions=js",
+    "relay-conf": "npm run incl-babel && npm run compile-relay"
   },
   "devDependencies": {
-    "flow-bin": "^0.69.0"
+    "babel-plugin-relay": "^1.5.0",
+    "flow-bin": "^0.69.0",
+    "relay-compiler": "^1.5.0"
   }
 }

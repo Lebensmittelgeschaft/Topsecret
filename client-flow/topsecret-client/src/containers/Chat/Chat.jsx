@@ -1,32 +1,33 @@
+// @flow
 import * as React from 'react';
 import Grid from 'material-ui/Grid';
 import { Theme, withStyles, WithStyles } from 'material-ui/styles';
-import AddIcon from 'material-ui-icons/Add';
+import AddIcon from '@material-ui/icons/Add';
 import Contacts from '../../components/Contacts/Contacts';
 import Contact from '../../components/Contacts/Contact/Contact';
 import ChatPreview from '../../components/ChatsPreview/ChatPreview/ChatPreview';
 import ChatsPreview from '../../components/ChatsPreview/ChatsPreview';
 import Fab from '../../components/Fab/Fab';
 
-export interface ChatProps {
+type ChatProps = {
 
 }
 
 export interface ChatStyleProps {
-    chatContainer: React.CSSProperties;
+    chatContainer: typeof style.chatContainer;
 }
 
-export interface ChatState {
+type ChatState = {
 
 }
 
-const style = (theme: Theme) => ({
+const style = (theme) => ({
     chatContainer: {
         marginTop: '10%',
     }
-} as ChatStyleProps);
+});
 
-class Chat extends React.Component<ChatProps & WithStyles<keyof ChatStyleProps>, ChatState> {
+class Chat extends React.Component<ChatProps & WithStyles<$Keys<ChatStyleProps>>, ChatState> {
     render() {
         return (
             <div>

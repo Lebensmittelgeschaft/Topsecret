@@ -2,10 +2,10 @@
 import * as React from 'react';
 import List, { ListSubheader } from 'material-ui/List';
 import { Theme, withStyles, WithStyles } from 'material-ui/styles';
-import type { ContactProps } from './Contact/Contact';
+import Contact from './Contact/Contact';
 
 type ContactsProps = {
-    children?: React.ChildrenArray<ContactProps>;
+    children?: React.ChildrenArray<React.Element<typeof Contact>>;
 }
 
 export interface ContactsStyleProps {

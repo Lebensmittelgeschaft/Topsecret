@@ -1,12 +1,13 @@
+// @flow
 import * as React from 'react';
 import SettingsControls from '../../components/SettingsControls/SettingsControls';
 import SettingsControl, { ControlPropType } from '../../components/SettingsControls/SettingsControl/SettingsControl';
 
-export interface SettingsProps {
+type SettingsProps = {
 
 }
 
-export interface SettingsState {
+type SettingsState = {
 
 }
 

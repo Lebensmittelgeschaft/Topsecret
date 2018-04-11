@@ -106,7 +106,7 @@ class Post extends React.Component<PostProps & WithStyles<$Keys<PostStyleProps>>
 export default createFragmentContainer(
   withStyles(style)(Post),
   graphql`
-  fragment FeedQuery_secret on Secret {
+  fragment Post_secret on Secret {
     id
     publisher
     text

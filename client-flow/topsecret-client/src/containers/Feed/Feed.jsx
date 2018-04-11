@@ -1,28 +1,29 @@
+// @flow
 import * as React from 'react';
 import Posts from '../../components/Posts/Posts';
 import Fab from '../../components/Fab/Fab';
-import AddIcon from 'material-ui-icons/Add';
+import AddIcon from '@material-ui/icons/Add';
 import enviroment from '../../relayEnviroment';
-import { QueryRenderer } from 'react-relay';
-import { feedQuery } from '../../queries/FeedQuery';
+import { QueryRenderer, graphql } from 'react-relay';
 
-export interface FeedProps {
 
-}
-
-export interface FeedState {
+type FeedProps = {
 
 }
 
-// const getSecrets = graphql`
-//     query FeedQuery($pageNum: Int) {
-//       ...Posts_posts @arguments(pageNum: $pageNum)
-//     }
-// `;
+type FeedState = {
+
+}
+
+const getSecrets = graphql`
+    query FeedQuery($pageNum: Int) {
+        ...Posts_posts @arguments(pageNum: $pageNum)
+    }
+`;
 
 class Feed extends React.Component<FeedProps, FeedState> {
 
-    onAddPost = (event: React.MouseEvent<HTMLElement>) => {
+    onAddPost = (event: SyntheticMouseEvent<HTMLElement>) => {
         alert('Add post clicked!');
     }
 
@@ -31,7 +32,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
             <div>
             <QueryRenderer
                 environment={enviroment}
-                query={feedQuery}
+                query={getSecrets}
                 variables={{pageNum: 1}}
                 render={(objResponse) => {
                     if (objResponse.error) {
