@@ -91,8 +91,10 @@ import {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLOutputType,
 } from 'graphql';
 
+import { UserType } from '../user/user.type';
 import { globalIdField } from 'graphql-relay';
 import { nodeInterface } from '../node/node';
 
@@ -127,9 +129,12 @@ const secretType: GraphQLObjectType = new GraphQLObjectType({
     id: globalIdField('Secret', obj => obj._id),
 
     publisher: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'The user id who publish the secret',
-      resolve: root => root.publisher,     
+      type: UserType,
+      description: 'The user id who publish the secret',      
+      resolve: root => {
+        console.log(root);
+        return root.publisher;
+      },     
     },
     
     text: {

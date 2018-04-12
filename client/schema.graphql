@@ -152,7 +152,7 @@ type Secret implements Node {
   id: ID!
 
   """The user id who publish the secret"""
-  publisher: String!
+  publisher: User
 
   """The text of the secret"""
   text: String!

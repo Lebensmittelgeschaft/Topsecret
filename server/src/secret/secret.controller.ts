@@ -18,8 +18,10 @@ export class SecretController extends baseController {
    */  
   static getSecretsPagination(page: number, props?: Partial<ISecret>) {
     const skippedDocuments = (page - 1) * SecretController.PAGE_SIZE;
-    return baseController.getByProps(props || {}).limit(SecretController.PAGE_SIZE)
-                                                 .skip(skippedDocuments);
+    return (<SecretService>baseController.service).getSecretsPagination(skippedDocuments,
+                                                                        SecretController.PAGE_SIZE,
+                                                                        props ? props : {});
+                                                 
   }
 
   /**

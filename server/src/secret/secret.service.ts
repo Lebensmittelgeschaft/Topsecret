@@ -10,6 +10,18 @@ export class SecretService extends BaseService<ISecret> {
   }
 
   /**
+   * Get secrets by page slices from the db
+   * 
+   * @param offset - number of secret to skip
+   * @param count - number of secret to pull
+   * @param props - props for filtering in the query
+   */
+  getSecretsPagination(offset: number, count: number, props?: Partial<ISecret>) {    
+    return this.getByProps(props || {})
+               .limit(count).skip(offset).populate('publisher');
+  }
+
+  /**
    * Add a comment to an existing secret in db
    * 
    * @param secretId - the secret id to add comment to 

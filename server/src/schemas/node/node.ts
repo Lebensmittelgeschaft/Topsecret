@@ -11,17 +11,10 @@ import { user as UserModel } from './../../user/user.model';
 import { secret as SecretModel } from './../../secret/secret.model';
 import { message as MessageModel } from './../../message/message.model';
 
-import { UserType } from '../user/user.type';
-import { SecretType } from '../secret/secret.type';
-import { MessageType } from '../message/message.type';
-
-
-
 export const NODE_TYPES = {
   USER: 'User',
   SECRET: 'Secret',
 };
-
 
 export const { nodeInterface, nodeField } = nodeDefinitions(
   async (globalId) => {
@@ -38,9 +31,9 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
   },
   (obj) => {
     if (obj instanceof UserModel) {
-      return UserType;
+      return NODE_TYPES.USER;
     } else if (obj instanceof SecretModel) {
-      return SecretType;
+      return NODE_TYPES.SECRET;
     }     
     return null as any;
   },

@@ -103,7 +103,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     name: 'createSecret',
     inputFields: {
       publisher: {
-        type: SecretType.getFields().publisher.type as GraphQLInputType,
+        type: CommentType.getFields().postBy.type as GraphQLInputType,
       },
       text: {
         type: SecretType.getFields().text.type as GraphQLInputType,
@@ -150,7 +150,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       userId: {
-        type: SecretType.getFields().publisher.type as GraphQLInputType,
+        type: CommentType.getFields().postBy.type as GraphQLInputType,
       },
     },
     outputFields: {
@@ -170,7 +170,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       userId: {
-        type: SecretType.getFields().publisher.type as GraphQLInputType,
+        type: CommentType.getFields().postBy.type as GraphQLInputType,
       },
     },
     outputFields: {

@@ -3,7 +3,10 @@ import { graphql } from 'react-relay';
 export const postFragment = graphql`
 fragment FeedQuery_secret on Secret {
   id 
-  publisher
+  publisher {
+    id
+    nickname
+  }
   text
   comments {
     postBy

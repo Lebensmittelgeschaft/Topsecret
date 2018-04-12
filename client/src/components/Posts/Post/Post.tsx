@@ -14,7 +14,7 @@ import { postFragment } from '../../../queries/FeedQuery';
 export interface PostProps {
   secret: {
     id: string;
-    publisher: string;
+    publisher: { id: string, nickname: string };
     text: string;
     comments: { postBy: string, text: string, timestamp?: number }[];
     likes: number;
@@ -61,7 +61,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
             </Grid>
             <Grid item={true}>
               <Typography align="right" variant="body2">
-                {this.props.secret.publisher} 
+                {this.props.secret.publisher.nickname} 
               </Typography>
             </Grid>
           </Grid>
