@@ -1,10 +1,9 @@
-import { runMutation, bindParams } from '../utils';
+import { runMutation } from '../utils';
 import {
-    AddLikeQL,
-    AddDislikeQL,
+    ToggleLikeQL,
+    ToggleDislikeQL,
 } from './FeedMutationsQL';
 
-// TODO: Add binding specific parameters to functions
 export class FeedMutator {
 
     /**
@@ -13,9 +12,12 @@ export class FeedMutator {
      * @param postId - Id of a post to like
      * @returns Mutation function contains the graphql needed for the mutation     
      */
-    static addLike(postId: string) {
+    static toggleLike(postId: string): typeof runMutation {
         const userId = localStorage.getItem('userId');        
-        return runMutation.bind(null, AddLikeQL, { secretId: postId, userId });
+        return runMutation.bind(null, {
+            mutation: ToggleLikeQL,
+            variables: { input: { secretId: postId, userId } },               
+        });
     }
 
     /**
@@ -24,9 +26,12 @@ export class FeedMutator {
      * @param postId - Id of a post to dislike     
      * @returns Mutation function contains the graphql needed for the mutation
      */
-    static addDislike(postId: string) {
+    static toggleDislike(postId: string): typeof runMutation {
         const userId = localStorage.getItem('userId');
-        return runMutation.bind(null, AddDislikeQL, { secretId: postId, userId });
+        return runMutation.bind(null, {
+            mutation: ToggleDislikeQL,
+            variables: { input: { secretId: postId, userId } },
+        });
     }
 
 }

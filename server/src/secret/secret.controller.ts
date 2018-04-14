@@ -36,22 +36,22 @@ export class SecretController extends baseController {
   }
 
   /**
-   * Add a like to an existing secret
+   * Add/Remove a like to/from an existing secret
    * 
-   * @param secretId - the secret id to add like to
+   * @param secretId - the secret id to add/remove like to/from
    * @param userId - the id of the user who liked the secret
    */
-  static addLike(secretId: string, userId: string) {
+  static toggleLike(secretId: string, userId: string) {
     return (<SecretService>baseController.service).toggleLike(secretId, userId, 'like');
   }
 
   /**
-   * Add a dislike to an existing secret
+   * Add/Remove a dislike to/from an existing secret
    * 
-   * @param secretId - the secret id to add dislike to
+   * @param secretId - the secret id to add/remove dislike to/from
    * @param userId - the id of the user who disliked the secret
    */
-  static addDislike(secretId: string, userId: string) {
+  static toggleDislike(secretId: string, userId: string) {
     return (<SecretService>baseController.service).toggleLike(secretId, userId, 'dislike');
   }
 

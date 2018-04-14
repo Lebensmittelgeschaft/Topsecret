@@ -80,9 +80,7 @@ class Posts extends React.Component<PostsProps /*& WithStyles<keyof PostsStylePr
                 justify="center"
                 alignItems="center"
             >
-                {this.props.posts.secrets.map((secret) => {
-                    /* tslint:disable:no-console */
-                    console.log(secret.id);
+                {this.props.posts.secrets.map((secret) => {                    
                     return (<Grid item={true} key={secret.id}>
                                 <Post secret={secret} />
                             </Grid>);

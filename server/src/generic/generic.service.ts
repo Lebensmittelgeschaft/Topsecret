@@ -39,11 +39,10 @@ export class BaseService<T extends IBaseModel> {
 
   // Update Methods
 
-  update(props: any) {
-    if (!props._id) return null;    
-    const parsedProps = props ? props as Object : {};    
+  update(props: { [key: string]: any, _id: string }) {    
+    const { _id, ...parsedProps } = props;    
     return this.model.findOneAndUpdate(
-      { _id: props._id },
+      { _id },
       parsedProps,
       { new: true, runValidators: true },
     );

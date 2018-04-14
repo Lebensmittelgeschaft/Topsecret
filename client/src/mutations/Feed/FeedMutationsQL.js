@@ -1,37 +1,31 @@
 import { grpahql } from 'react-relay';
 
-const PostStructure = `
-    id
-    publisher {
-      id
-      nickname
-    }
-    text
-    comments {
-      timestamp
-    }
-    likes
-    dislikes
-    timestamp
-        
-}`;
-
-export const AddLikeQL = graphql`
-    mutation AddLikeMutation(
-        $input: AddLikeInput
+export const ToggleLikeQL = graphql`
+    mutation FeedMutationsQL_AddLikeMutation(
+        $input: toggleLikeInput!
     ) {
-        AddLike(input: $input) {
-            ${PostStructure}
+        toggleLike(input: $input) {
+            secret {
+                id
+                likes
+                dislikes 
+            }
+            clientMutationId
         }
     }
 `;
 
-export const AddDislikeQL = graphql`
-    mutation AddDislikeMutation(
-        $input: AddDislikeInput
+export const ToggleDislikeQL = graphql`
+    mutation FeedMutationsQL_AddDislikeMutation(
+        $input: toggleDislikeInput!
     ) {
-        AddDislike(input: $input) {
-            ${PostStructure}
+        toggleDislike(input: $input) {
+            secret {
+                id
+                likes
+                dislikes 
+            }
+            clientMutationId
         }
     }
 `;

@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'dev') mongoose.set('debug', true);
 // Attaching node promise to the mongoose promise
 (<any>mongoose).Promise = global.Promise;
 
-mongoose.connect(config.MONGOURI, { useMongoClient: true }, (err) => {
+mongoose.connect(config.MONGOURI, (err) => {
   if (err) {
     console.error(err);
     process.exit();

@@ -10,6 +10,7 @@ import ModeComment from 'material-ui-icons/ModeComment';
 import AccessTime from 'material-ui-icons/AccessTime';
 import { createFragmentContainer } from 'react-relay';
 import { postFragment } from '../../../queries/FeedQuery';
+import { FeedMutator } from '../../../mutations/Feed/FeedMutations';
 
 export interface PostProps {
   secret: {
@@ -17,20 +18,25 @@ export interface PostProps {
     publisher: { id: string, nickname: string };
     text: string;
     comments: { postBy: string, text: string, timestamp?: number }[];
-    likes: number;
-    dislikes: number;
+    likes: string[];
+    dislikes: string[];
     timestamp: string;
-  }; 
+  };
 }
 
 export interface PostState {
-
+  likeToggled: boolean;
+  dislikeToggled: boolean;
 }
 
 export interface PostStyleProps {
   post: React.CSSProperties;
   postContent: React.CSSProperties;
   postActions: React.CSSProperties;
+  // dislikeOn: React.CSSProperties;
+  // dislikeOff: React.CSSProperties;
+  // likeOn: React.CSSProperties;
+  // likeOff: React.CSSProperties;
 }
 
 const style = (theme: Theme) => ({
@@ -41,10 +47,55 @@ const style = (theme: Theme) => ({
   postContent: {
   },
   postActions: {
-  }
+  },
 } as PostStyleProps);
 
+const actionStyle = {
+  dislikeOn: {
+    opacity: 1,
+  },
+  likeOn: {
+    opacity: 1,
+  },
+  dislikeOff: {
+    opacity: 0.5,
+  },
+  likeOff: {
+    opacity: 0.5
+  }
+};
+
+enum ToggleLikeType {
+  LIKE,
+  DISLIKE
+}
+
 class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>, PostState> {
+
+  constructor(props: PostProps & WithStyles<keyof PostStyleProps>) {
+    super(props);
+    this.state = {
+      likeToggled: false,
+      dislikeToggled: false,
+    };
+  }
+
+  componentWillMount() {
+    this.setState(this.setLikeDislikeStatus(this.props.secret));
+  }
+
+  /* tslint:disable:no-console */
+  setLikeDislikeStatus(
+    secret: {
+      likes: PostProps['secret']['likes'],
+      dislikes: PostProps['secret']['dislikes']
+    }) {
+    return {
+      likeToggled: secret.likes.indexOf(localStorage.getItem('userId') || '') !== -1,
+      dislikeToggled: secret.dislikes.indexOf(localStorage.getItem('userId') || '') !== -1
+    };
+  }
+
   render() {
     return (
       <Card className={this.props.classes.post}>
@@ -55,13 +106,13 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
           <Grid container={true} direction="row" justify="space-between" alignItems="center">
             <Grid item={true}>
               <Typography align="left" variant="body1">
-                <AccessTime/>
+                <AccessTime />
                 {new Date(+this.props.secret.timestamp).toLocaleString()}
               </Typography>
             </Grid>
             <Grid item={true}>
               <Typography align="right" variant="body2">
-                {this.props.secret.publisher.nickname} 
+                {this.props.secret.publisher.nickname}
               </Typography>
             </Grid>
           </Grid>
@@ -72,11 +123,21 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
               <Grid item={true}>
                 <Button size="small"><ModeComment /></Button>
               </Grid>
-              <Grid item={true}>
-                <Button size="small"><ThumbDown /></Button>
+              <Grid item={true}>                
+                <Button
+                  style={this.state.dislikeToggled ? actionStyle.dislikeOn : actionStyle.dislikeOff}
+                  size="small"
+                  onClick={this.handleToggleDislike}
+                ><ThumbDown />
+                </Button>
               </Grid>
               <Grid item={true}>
-                <Button size="small"><ThumbUp /></Button>
+                <Button 
+                  style={this.state.likeToggled ? actionStyle.likeOn : actionStyle.likeOff}
+                  size="small"
+                  onClick={this.handleToggleLike}
+                ><ThumbUp />
+                </Button>
               </Grid>
             </Grid>
             <Grid container={true} direction="row" justify="space-around" alignItems="center">
@@ -87,12 +148,12 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
               </Grid>
               <Grid item={true}>
                 <Typography variant="caption">
-                  {this.props.secret.dislikes}
+                  {this.props.secret.dislikes.length}
                 </Typography>
               </Grid>
               <Grid item={true}>
                 <Typography variant="caption">
-                  {this.props.secret.likes}
+                  {this.props.secret.likes.length}
                 </Typography>
               </Grid>
             </Grid>
@@ -101,6 +162,70 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
       </Card>
     );
   }
+
+  /* tslint:disable:no-console */
+  private handleToggleLike = () => {
+    FeedMutator.toggleLike(this.props.secret.id)({
+      optimisticResponse: this.getToggleLikeOptimisticResponse(ToggleLikeType.LIKE),
+      onError: (error) => console.log('Error Like'),
+    });
+  }
+
+  private handleToggleDislike = () => {
+    /* tslint:disable:no-console */
+    FeedMutator.toggleDislike(this.props.secret.id)({
+      optimisticResponse: this.getToggleLikeOptimisticResponse(ToggleLikeType.DISLIKE),
+      onError: (error) => console.log('Error Dislike'),
+    });
+  }
+
+  private getToggleLikeOptimisticResponse = (likeType: ToggleLikeType) => {
+    const response = {
+      toggleLike: {
+        secret: {
+          id: this.props.secret.id,
+          likes: [...this.props.secret.likes],
+          dislikes: [...this.props.secret.likes],
+        }
+      }
+    };
+
+    switch (likeType) {
+      case (ToggleLikeType.LIKE):
+        if (this.state.likeToggled) {
+          response.toggleLike.secret.likes =
+            response.toggleLike.secret.likes
+              .splice(this.props.secret.likes.indexOf(localStorage.getItem('userId') || ''), 1);
+        } else {
+          if (this.state.dislikeToggled) {
+            response.toggleLike.secret.dislikes =
+              response.toggleLike.secret.dislikes
+                .splice(this.props.secret.dislikes.indexOf(localStorage.getItem('userId') || ''), 1);
+          }
+          response.toggleLike.secret.likes.push(localStorage.getItem('userId') || '');
+        }
+        break;
+      case (ToggleLikeType.DISLIKE):
+        if (this.state.dislikeToggled) {
+          response.toggleLike.secret.dislikes =
+            response.toggleLike.secret.dislikes
+              .splice(this.props.secret.dislikes.indexOf(localStorage.getItem('userId') || ''), 1);
+        } else {
+          if (this.state.likeToggled) {
+            response.toggleLike.secret.likes =
+              response.toggleLike.secret.likes
+                .splice(this.props.secret.likes.indexOf(localStorage.getItem('userId') || ''), 1);
+          }
+          response.toggleLike.secret.dislikes.push(localStorage.getItem('userId') || '');
+        }
+        break;
+      default:
+    }
+
+    this.setState(this.setLikeDislikeStatus(response.toggleLike.secret));
+    return response;
+  }
+
 }
 
 export default createFragmentContainer(

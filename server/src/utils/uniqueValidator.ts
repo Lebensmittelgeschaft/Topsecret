@@ -1,9 +1,8 @@
-import { IBaseModel } from './../generic/generic.interface';
-import { Model, ValidationError } from 'mongoose';
+import { model as getModel } from 'mongoose';
 
-export const uniqueValidator = async (model: Model<IBaseModel>,
+export const uniqueValidator = async (modelName: string,
                                       idField: string,
                                       idValue: string) => {
-  const modelCount = await model.count({ [idField]: idValue });
-  return (modelCount === 1);
+  const modelCount = await getModel(modelName).count({ [idField]: idValue });
+  return (modelCount === 0);
 };

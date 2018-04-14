@@ -1,7 +1,6 @@
-import { Model } from 'mongoose';
-import { IBaseModel } from './../generic/generic.interface';
+import { model as getModel } from 'mongoose';
 
-export const refValidator = async (model: Model<IBaseModel>, idField: string, idValue: string) => {
-  const modelExist = await model.findOne({ [idField]: idValue });
-  return (modelExist) ? true : false;
+export const refValidator = async (modelName: string, idField: string, idValue: string) => {
+  const modelExist = await getModel(modelName).findOne({ [idField]: idValue });
+  return !!modelExist;
 };  

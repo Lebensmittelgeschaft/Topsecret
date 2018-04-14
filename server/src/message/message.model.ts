@@ -14,13 +14,13 @@ const messageSchema: Schema = new Schema({
     type: String,
     ref: 'User',
     required: true,
-    validator: userRefValidator,
+    validate: userRefValidator,
   },
   receiver: {
     type: String,
     ref: 'User',
     required: true,
-    validator: userRefValidator,
+    validate: userRefValidator,
   },
   text: {
     type: String,
@@ -33,8 +33,8 @@ const messageSchema: Schema = new Schema({
 });
 
 // Used for avoid from client to modify the timestamp of the message
-messageSchema.pre('save', function (this: IMessage, next) {
-  this.timestamp = new Date().getTime();
+messageSchema.pre('save', function (next) {
+  (<IMessage>this).timestamp = new Date().getTime();
   next();
 });
 

@@ -11,15 +11,14 @@ export interface IUser extends IBaseModel {
 const userSchema: Schema = new Schema({
   _id: {
     type: String,
-    unique: true,
     required: true,
-    validator: userUniqueValidator,
+    validate: userUniqueValidator,
   },
   nickname: {
     type: String,
-    unique: true,        
     required: true,
-    validator: userNicknameValidator,
+    unique: true,
+    validate: userNicknameValidator,
   },       
 });
 
@@ -30,7 +29,7 @@ export function generateHash(id: string): string {
 }
 
 // Pre defined hook for hashing the id for the user for maximum anonymously
-userSchema.pre('save', function save(this: IUser, next) {  
+userSchema.pre('save', function save(next) {  
   this._id = generateHash(this._id);
   next();
 });

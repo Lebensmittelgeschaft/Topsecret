@@ -32,7 +32,7 @@ export class SecretService extends BaseService<ISecret> {
     return this.update({
       _id: secretId,
       $push: { comments: { postBy, text, timestamp: Date.now() } },
-    });
+    }).populate('publisher comments.postBy');
   }
 
   /**
@@ -43,27 +43,38 @@ export class SecretService extends BaseService<ISecret> {
    * @param userId - the user id to add
    * @param arrayType - like or dislike array
    */
-  toggleLike(secretId: string, userId: string, arrayType: SecretArrayType) {
-    let pullQuery = {};
-    let pushQuery = {};
+  async toggleLike(secretId: string, userId: string, arrayType: SecretArrayType) {
+    let query = {};    
+    const secret = await this.getOneByProps({ _id: secretId });
+    
+    if (secret) {
 
-    switch (arrayType) {
-      case ('like'):
-        pullQuery = { dislikes: userId };
-        pushQuery = { likes: userId };        
-        break;
-      case ('dislike'):
-        pullQuery = { likes: userId };
-        pushQuery = { dislikes: userId };
-        break;
-      default:
+      switch (arrayType) {
+        case ('like'):                  
+          if (secret.likes.indexOf(userId) != -1) {
+            query = { $pull: { likes: userId } };
+          } else {
+            query = { $pull: { dislikes: userId }, $addToSet: { likes: userId } };
+          }
+          break;
+
+        case ('dislike'):          
+          if (secret.dislikes.indexOf(userId) != -1) {
+            query = { $pull: { dislikes: userId } };
+          } else {
+            query = { $pull: { likes: userId }, $addToSet: { dislikes: userId } };
+          }
+          break;
+        default:
+      }     
+
+      return this.update({
+        _id: secretId,
+        ...query,
+      }).populate('publisher');
     }
 
-    return this.update({
-      _id: secretId,
-      $pull: pullQuery,
-      $addToSet: pushQuery,
-    });
+    return null;
   }
 
 }

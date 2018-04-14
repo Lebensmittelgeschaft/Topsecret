@@ -10,30 +10,11 @@ type addCommentPayload {
   clientMutationId: String
 }
 
-input addDislikeInput {
-  secretId: ID!
-  userId: String!
-  clientMutationId: String
-}
-
-type addDislikePayload {
-  secret: Secret
-  clientMutationId: String
-}
-
-input addLikeInput {
-  secretId: ID!
-  userId: String!
-  clientMutationId: String
-}
-
-type addLikePayload {
-  secret: Secret
-  clientMutationId: String
-}
-
 """Comment on secret model"""
 type Comment {
+  """Id of the comment"""
+  id: String!
+
   """Id of the user who post the comment"""
   postBy: String!
 
@@ -108,8 +89,8 @@ type Mutation {
   updateUserNickname(input: updateUserNicknameInput!): updateUserNicknamePayload
   createSecret(input: createSecretInput!): createSecretPayload
   addComment(input: addCommentInput!): addCommentPayload
-  addLike(input: addLikeInput!): addLikePayload
-  addDislike(input: addDislikeInput!): addDislikePayload
+  toggleLike(input: toggleLikeInput!): toggleLikePayload
+  toggleDislike(input: toggleDislikeInput!): toggleDislikePayload
   createMessage(input: createMessageInput!): createMessagePayload
 }
 
@@ -161,13 +142,35 @@ type Secret implements Node {
   comments: [Comment]
 
   """Number of likes of the secret"""
-  likes: Int
+  likes: [String]
 
   """Number of dislikes of the secret"""
-  dislikes: Int
+  dislikes: [String]
 
   """Timestamp in milliseconds of date the secret published"""
   timestamp: String
+}
+
+input toggleDislikeInput {
+  secretId: ID!
+  userId: String!
+  clientMutationId: String
+}
+
+type toggleDislikePayload {
+  secret: Secret
+  clientMutationId: String
+}
+
+input toggleLikeInput {
+  secretId: ID!
+  userId: String!
+  clientMutationId: String
+}
+
+type toggleLikePayload {
+  secret: Secret
+  clientMutationId: String
 }
 
 input updateUserNicknameInput {

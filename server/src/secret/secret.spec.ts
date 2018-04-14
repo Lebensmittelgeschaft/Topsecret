@@ -72,8 +72,8 @@ describe('Secret Service', () => {
     const savedSecret = secretService.save(preDefinedSecret);
     return Promise.all([
       expect(savedSecret).to.eventually.exist,
-      expect(savedSecret).to.eventually.have.property('likes', 0),
-      expect(savedSecret).to.eventually.have.property('dislikes', 0),
+      expect(savedSecret).to.eventually.have.property('likes').that.is.an('array').that.is.empty,
+      expect(savedSecret).to.eventually.have.property('dislikes').that.is.an('array').that.is.empty,
       expect(savedSecret).to.eventually.have.property('timestamp').above(0),
       expect(savedSecret).to.eventually.have.property('comments').that.is.an('array').that.is.empty,
     ]);   
@@ -120,6 +120,42 @@ describe('Secret Service', () => {
       expect(secretService.getOneByProps({ text: 'wmeqoemwo' })).to.eventually.not.exist,
       expect(secretService.getOneByProps({ publisher: 'ewqewqeqw' })).to.eventually.not.exist,
     ]);
+  });
+
+  it('Should update existing secret by adding like of existing user', () => {
+    const updatedSecret = secretService.update({
+      _id: testSecret._id,      
+      likes: [testUser._id]
+    });
+
+    return expect(updatedSecret).to.eventually.exist.and.have.nested.property('likes[0]', testUser._id);
+  });
+
+  it('Should not update existing secret by adding like of unexisting user', () => {
+    const updatedSecret = secretService.update({
+      _id: testSecret2._id,
+      likes: ['nonexistingUser'],
+    });
+
+    return expect(updatedSecret).to.be.rejectedWith(mongoose.ValidationError);
+  });
+
+  it('Should update existing secret by adding comment of existing user', () => {
+    const updatedSecret = secretService.update({
+      _id: testSecret2._id,
+      comments: [{ postBy: testUser2._id, text: 'Testing !' }],
+    });
+
+    return expect(updatedSecret).to.eventually.exist.and.have.nested.property('comments[0].postBy', testUser2._id)
+  });
+
+  it('Should not update existing secret by adding comment of existing user', () => {
+    const updatedSecret = secretService.update({
+      _id: testSecret2._id,
+      comments: [{ postBy: 'nonexisting', text: 'Testing !' }],
+    });
+
+    return expect(updatedSecret).to.be.rejectedWith(mongoose.ValidationError);
   });
 
   it('Should update existing secret', () => {

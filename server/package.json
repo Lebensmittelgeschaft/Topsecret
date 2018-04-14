@@ -39,7 +39,7 @@
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.1",
     "graphql-relay": "^0.5.5",
-    "mongoose": "^4.13.9",
+    "mongoose": "^5.0.14",
     "morgan": "^1.9.0"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "@types/graphql": "^0.12.4",
     "@types/graphql-relay": "^0.4.5",
     "@types/mocha": "^2.2.46",
-    "@types/mongoose": "^4.7.32",
+    "@types/mongoose": "^5.0.9",
     "@types/morgan": "^1.7.35",
     "@types/node": "^9.3.0",
     "chai": "^4.1.2",

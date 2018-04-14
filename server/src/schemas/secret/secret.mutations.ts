@@ -87,6 +87,7 @@
 
 import {
   GraphQLString,
+  GraphQLBoolean,
   GraphQLNonNull,
   Thunk,
   GraphQLFieldConfigMap,
@@ -95,7 +96,7 @@ import {
 import { SecretType, CommentType } from './secret.type';
 import { secret as SecretModel } from './../../secret/secret.model';
 import { SecretController } from './../../secret/secret.controller';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
 
 const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
 
@@ -136,15 +137,15 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     },
     mutateAndGetPayload: async (inputArgs) => {
       return {
-        secret: await SecretController.addComment(inputArgs.secretId,
-                                                  inputArgs.postBy,
+        secret: await SecretController.addComment(fromGlobalId(inputArgs.secretId).id,
+                                                  fromGlobalId(inputArgs.postBy).id,
                                                   inputArgs.text),
       };
     },
   }),
 
-  addLike: mutationWithClientMutationId({
-    name: 'addLike',
+  toggleLike: mutationWithClientMutationId({
+    name: 'toggleLike',
     inputFields: {
       secretId: {
         type: SecretType.getFields().id.type as GraphQLInputType,
@@ -158,27 +159,29 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     },
     mutateAndGetPayload: async (inputArgs) => {
       return {
-        secret: await SecretController.addLike(inputArgs.secretId, inputArgs.userId),
+        secret: await SecretController.toggleLike(fromGlobalId(inputArgs.secretId).id,
+                                                  fromGlobalId(inputArgs.userId).id),
       };
     },
   }),
 
-  addDislike: mutationWithClientMutationId({
-    name: 'addDislike',
+  toggleDislike: mutationWithClientMutationId({
+    name: 'toggleDislike',
     inputFields: {
       secretId: {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       userId: {
         type: CommentType.getFields().postBy.type as GraphQLInputType,
-      },
+      },    
     },
     outputFields: {
       secret: { type: SecretType },
     },
     mutateAndGetPayload: async (inputArgs) => {
       return {
-        secret: await SecretController.addDislike(inputArgs.secretId, inputArgs.userId),
+        secret: await SecretController.toggleDislike(fromGlobalId(inputArgs.secretId).id,
+                                                     fromGlobalId(inputArgs.userId).id),
       };
     },
   }),  

@@ -94,6 +94,7 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
+import { secret as SecretModel } from '../../secret/secret.model';
 import { UserType } from '../user/user.type';
 import { globalIdField } from 'graphql-relay';
 import { nodeInterface } from '../node/node';
@@ -102,11 +103,16 @@ const commentType = new GraphQLObjectType({
   name: 'Comment',
   description: 'Comment on secret model',
 
-  fields: {      
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Id of the comment',
+      resolve: root => root._id,
+    },
     postBy: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Id of the user who post the comment',
-      resolve: root => root.postBy,
+      resolve: root => root.postBy.nickname,
     },
     text: {
       type: new GraphQLNonNull(GraphQLString),
@@ -123,7 +129,8 @@ const commentType = new GraphQLObjectType({
 
 const secretType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Secret',
-  description: 'Secret object model',
+  description: 'Secret object model',  
+  isTypeOf: value => value instanceof SecretModel,
 
   fields: {
     id: globalIdField('Secret', obj => obj._id),
@@ -131,10 +138,7 @@ const secretType: GraphQLObjectType = new GraphQLObjectType({
     publisher: {
       type: UserType,
       description: 'The user id who publish the secret',      
-      resolve: root => {
-        console.log(root);
-        return root.publisher;
-      },     
+      resolve: root => root.publisher,     
     },
     
     text: {
@@ -150,15 +154,15 @@ const secretType: GraphQLObjectType = new GraphQLObjectType({
     },
 
     likes: {
-      type: GraphQLInt,
+      type: new GraphQLList(GraphQLString),
       description: 'Number of likes of the secret',
-      resolve: root => root.likes.length,
+      resolve: root => root.likes,
     },
 
     dislikes: {
-      type: GraphQLInt,
+      type: new GraphQLList(GraphQLString),
       description: 'Number of dislikes of the secret',
-      resolve: root => root.dislikes.length,
+      resolve: root => root.dislikes,
     },
 
     timestamp: {

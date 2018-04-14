@@ -6,11 +6,12 @@ import * as mongoose from 'mongoose';
 
 describe('User Service', () => {
   let userService: UserService;
+  const testUserId = '12345678';
   const testUserHash = 'a206adbf33733c456d041100275d2d7559a8096018e761e6ff552a5c177e3040';
   const testUser2Hash = '8e1dd83fa5cd522177a1467fb057b489c8507fe2a42f53dd0c1e1452233b133a';
 
   let testUser = new UserModel({
-    _id: '12345678',
+    _id: testUserId,
     nickname: 'FunnyBunny',
   });
   let testUser2 = new UserModel({
@@ -42,7 +43,7 @@ describe('User Service', () => {
 
   it('Should not save invalid user', () => {
     const invalidUser = new UserModel({
-      _id: testUserHash,
+      _id: testUserId,
       nickname: 'tester',
     });
     const invalidUser2 = new UserModel({

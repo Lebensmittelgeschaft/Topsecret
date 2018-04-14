@@ -36,12 +36,14 @@ import {
   GraphQLNonNull,
 } from 'graphql';
 
+import { user as UserModel } from '../../user/user.model';
 import { globalIdField } from 'graphql-relay';
 import { nodeInterface } from '../node/node';
 
 const userType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   description: 'User object model',
+  isTypeOf: value => value instanceof UserModel,
 
   fields: {
     id: globalIdField('User', obj => obj._id),

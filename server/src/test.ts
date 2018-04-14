@@ -19,7 +19,7 @@ before(async () => {
 
   (<any>mongoose).Promise = global.Promise;
 
-  await mongoose.connect(config.MONGOURI, { useMongoClient: true }, (err) => {
+  await mongoose.connect(config.MONGOURI, (err) => {
     if (err) {
       console.error(err);
       process.exit();
