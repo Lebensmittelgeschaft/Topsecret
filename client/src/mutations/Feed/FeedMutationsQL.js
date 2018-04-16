@@ -29,3 +29,23 @@ export const ToggleDislikeQL = graphql`
         }
     }
 `;
+
+export const addCommentQL = graphql`
+    mutation FeedMutationsQL_AddCommentMutation(
+        $input: addCommentInput!
+    ) {
+        addComment(input: $input) {
+            secret {
+                id
+                likes
+                dislikes
+                comments {
+                    postBy
+                    text
+                    timestamp
+                }
+            }
+            clientMutationId
+        }
+    }
+`;

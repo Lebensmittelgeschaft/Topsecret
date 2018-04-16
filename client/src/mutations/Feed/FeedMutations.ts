@@ -2,6 +2,7 @@ import { runMutation } from '../utils';
 import {
     ToggleLikeQL,
     ToggleDislikeQL,
+    addCommentQL,
 } from './FeedMutationsQL';
 
 export class FeedMutator {
@@ -31,6 +32,20 @@ export class FeedMutator {
         return runMutation.bind(null, {
             mutation: ToggleDislikeQL,
             variables: { input: { secretId: postId, userId } },
+        });
+    }
+
+    /**
+     * Mutation for adding comment to post
+     * 
+     * @param postId - Id of a post to add comment
+     * @param text - Text of the comment
+     */
+    static addComment(postId: string, text: string): typeof runMutation {
+        const userId = localStorage.getItem('userId');
+        return runMutation.bind(null, {
+            mutation: addCommentQL,
+            variables: { input: { secretId: postId, postBy: userId, text}}
         });
     }
 

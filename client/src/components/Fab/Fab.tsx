@@ -7,7 +7,7 @@ import { Theme, withStyles, WithStyles } from 'material-ui/styles';
 
 export interface FabProps {
     children: React.ReactNode;
-    action: ((event: React.MouseEvent<HTMLElement>) => void) | undefined;    
+    action: (React.ReactEventHandler<{}>) | undefined;    
 }
 
 export interface FabStyleProps {

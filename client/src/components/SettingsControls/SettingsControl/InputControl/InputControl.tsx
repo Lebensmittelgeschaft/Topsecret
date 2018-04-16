@@ -6,7 +6,7 @@ export interface InputControlProps {
     id: string;
     tooltip?: string;
     placeholder: string;
-    changeHandler?: (event: object) => void; 
+    changeHandler?: React.ReactEventHandler<{}>; 
 }
 
 const inputControl = (props: InputControlProps) => {

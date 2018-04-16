@@ -11,13 +11,14 @@ import AccessTime from 'material-ui-icons/AccessTime';
 import { createFragmentContainer } from 'react-relay';
 import { postFragment } from '../../../queries/FeedQuery';
 import { FeedMutator } from '../../../mutations/Feed/FeedMutations';
+import PostDialog from './PostDialog/PostDialog';
 
 export interface PostProps {
   secret: {
     id: string;
     publisher: { id: string, nickname: string };
     text: string;
-    comments: { postBy: string, text: string, timestamp?: number }[];
+    comments: { postBy: string, text: string, timestamp: string }[];
     likes: string[];
     dislikes: string[];
     timestamp: string;
@@ -27,6 +28,7 @@ export interface PostProps {
 export interface PostState {
   likeToggled: boolean;
   dislikeToggled: boolean;
+  openDialog: boolean;
 }
 
 export interface PostStyleProps {
@@ -77,6 +79,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     this.state = {
       likeToggled: false,
       dislikeToggled: false,
+      openDialog: false,
     };
   }
 
@@ -91,6 +94,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
       dislikes: PostProps['secret']['dislikes']
     }) {
     return {
+      ...this.state,
       likeToggled: secret.likes.indexOf(localStorage.getItem('userId') || '') !== -1,
       dislikeToggled: secret.dislikes.indexOf(localStorage.getItem('userId') || '') !== -1
     };
@@ -98,69 +102,85 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
 
   render() {
     return (
-      <Card className={this.props.classes.post}>
-        <CardContent>
-          <Typography align="center" variant="title" gutterBottom={true}>
-            {this.props.secret.text}
-          </Typography>
-          <Grid container={true} direction="row" justify="space-between" alignItems="center">
-            <Grid item={true}>
-              <Typography align="left" variant="body1">
-                <AccessTime />
-                {new Date(+this.props.secret.timestamp).toLocaleString()}
-              </Typography>
-            </Grid>
-            <Grid item={true}>
-              <Typography align="right" variant="body2">
-                {this.props.secret.publisher.nickname}
-              </Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <CardActions className={this.props.classes.postActions}>
-          <Grid container={true} direction="column" justify="space-around" alignItems="center">
-            <Grid container={true} direction="row" justify="space-around" alignItems="center">
+      <div>
+        <Card className={this.props.classes.post}>
+          <CardContent>
+            <Typography align="center" variant="title" gutterBottom={true}>
+              {this.props.secret.text}
+            </Typography>
+            <Grid container={true} direction="row" justify="space-between" alignItems="center">
               <Grid item={true}>
-                <Button size="small"><ModeComment /></Button>
-              </Grid>
-              <Grid item={true}>                
-                <Button
-                  style={this.state.dislikeToggled ? actionStyle.dislikeOn : actionStyle.dislikeOff}
-                  size="small"
-                  onClick={this.handleToggleDislike}
-                ><ThumbDown />
-                </Button>
-              </Grid>
-              <Grid item={true}>
-                <Button 
-                  style={this.state.likeToggled ? actionStyle.likeOn : actionStyle.likeOff}
-                  size="small"
-                  onClick={this.handleToggleLike}
-                ><ThumbUp />
-                </Button>
-              </Grid>
-            </Grid>
-            <Grid container={true} direction="row" justify="space-around" alignItems="center">
-              <Grid item={true}>
-                <Typography variant="caption">
-                  {this.props.secret.comments.length}
+                <Typography align="left" variant="body1">
+                  <AccessTime />
+                  {new Date(+this.props.secret.timestamp).toLocaleString()}
                 </Typography>
               </Grid>
               <Grid item={true}>
-                <Typography variant="caption">
-                  {this.props.secret.dislikes.length}
-                </Typography>
-              </Grid>
-              <Grid item={true}>
-                <Typography variant="caption">
-                  {this.props.secret.likes.length}
+                <Typography align="right" variant="body2">
+                  {this.props.secret.publisher.nickname}
                 </Typography>
               </Grid>
             </Grid>
-          </Grid>
-        </CardActions>
-      </Card>
+          </CardContent>
+          <CardActions className={this.props.classes.postActions}>
+            <Grid container={true} direction="column" justify="space-around" alignItems="center">
+              <Grid container={true} direction="row" justify="space-around" alignItems="center">
+                <Grid item={true}>
+                  <Button size="small" onClick={this.toggleOpenDialog}>
+                    <ModeComment />
+                  </Button>
+                </Grid>
+                <Grid item={true}>
+                  <Button
+                    style={this.state.dislikeToggled ? actionStyle.dislikeOn : actionStyle.dislikeOff}
+                    size="small"
+                    onClick={this.handleToggleDislike}
+                  ><ThumbDown />
+                  </Button>
+                </Grid>
+                <Grid item={true}>
+                  <Button
+                    style={this.state.likeToggled ? actionStyle.likeOn : actionStyle.likeOff}
+                    size="small"
+                    onClick={this.handleToggleLike}
+                  ><ThumbUp />
+                  </Button>
+                </Grid>
+              </Grid>
+              <Grid container={true} direction="row" justify="space-around" alignItems="center">
+                <Grid item={true}>
+                  <Typography variant="caption">
+                    {this.props.secret.comments.length}
+                  </Typography>
+                </Grid>
+                <Grid item={true}>
+                  <Typography variant="caption">
+                    {this.props.secret.dislikes.length}
+                  </Typography>
+                </Grid>
+                <Grid item={true}>
+                  <Typography variant="caption">
+                    {this.props.secret.likes.length}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </CardActions>
+        </Card>
+        {this.state.openDialog ?         
+        <PostDialog
+          secret={this.props.secret}
+          open={this.state.openDialog}
+          toggleShow={this.toggleOpenDialog}
+          handleLike={this.handleToggleLike}
+          handleDislike={this.handleToggleDislike}          
+        /> : null}
+      </div>
     );
+  }
+
+  private toggleOpenDialog = () => {
+    this.setState({ ...this.state, openDialog: !this.state.openDialog });
   }
 
   /* tslint:disable:no-console */
