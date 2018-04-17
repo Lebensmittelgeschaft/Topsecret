@@ -18,7 +18,7 @@ export class SecretService extends BaseService<ISecret> {
    */
   getSecretsPagination(offset: number, count: number, props?: Partial<ISecret>) {    
     return this.getByProps(props || {})
-               .limit(count).skip(offset).populate('publisher');
+               .limit(count).skip(offset).populate('publisher likes dislikes comments.postBy');
   }
 
   /**
@@ -32,7 +32,7 @@ export class SecretService extends BaseService<ISecret> {
     return this.update({
       _id: secretId,
       $push: { comments: { postBy, text, timestamp: Date.now() } },
-    }).populate('publisher comments.postBy');
+    }).populate('publisher likes dislikes comments.postBy');
   }
 
   /**
@@ -71,7 +71,7 @@ export class SecretService extends BaseService<ISecret> {
       return this.update({
         _id: secretId,
         ...query,
-      }).populate('publisher');
+      }).populate('publisher likes dislikes comments.postBy');
     }
 
     return null;

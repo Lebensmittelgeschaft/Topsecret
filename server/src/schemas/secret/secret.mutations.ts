@@ -88,7 +88,9 @@
 import {
   GraphQLString,
   GraphQLBoolean,
+  GraphQLList,
   GraphQLNonNull,
+  GraphQLObjectType,
   Thunk,
   GraphQLFieldConfigMap,
   GraphQLInputType,
@@ -104,7 +106,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
     name: 'createSecret',
     inputFields: {
       publisher: {
-        type: CommentType.getFields().postBy.type as GraphQLInputType,
+        type: (<GraphQLObjectType>CommentType.getFields().postBy.type).getFields().id.type as GraphQLInputType,
       },
       text: {
         type: SecretType.getFields().text.type as GraphQLInputType,
@@ -126,7 +128,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       postBy: {
-        type: CommentType.getFields().postBy.type as GraphQLInputType,
+        type: (<GraphQLObjectType>CommentType.getFields().postBy.type).getFields().id.type as GraphQLInputType,
       },
       text: {
         type: CommentType.getFields().text.type as GraphQLInputType,
@@ -151,7 +153,7 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       userId: {
-        type: CommentType.getFields().postBy.type as GraphQLInputType,
+        type: (<GraphQLList<any>>SecretType.getFields().likes.type).ofType.getFields().id.type as GraphQLInputType,
       },
     },
     outputFields: {
@@ -172,13 +174,13 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
         type: SecretType.getFields().id.type as GraphQLInputType,
       },
       userId: {
-        type: CommentType.getFields().postBy.type as GraphQLInputType,
+        type: (<GraphQLList<any>>SecretType.getFields().dislikes.type).ofType.getFields().id.type as GraphQLInputType,
       },    
     },
     outputFields: {
       secret: { type: SecretType },
     },
-    mutateAndGetPayload: async (inputArgs) => {
+    mutateAndGetPayload: async (inputArgs) => {      
       return {
         secret: await SecretController.toggleDislike(fromGlobalId(inputArgs.secretId).id,
                                                      fromGlobalId(inputArgs.userId).id),

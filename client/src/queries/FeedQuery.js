@@ -9,12 +9,21 @@ fragment FeedQuery_secret on Secret {
   }
   text
   comments {
-    postBy
+    postBy {
+      id
+      nickname
+    }
     text
     timestamp
   }
-  likes
-  dislikes
+  likes {
+    id
+    nickname
+  }
+  dislikes {
+    id
+    nickname
+  }
   timestamp
 }
 `;

@@ -110,9 +110,9 @@ const commentType = new GraphQLObjectType({
       resolve: root => root._id,
     },
     postBy: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: UserType,
       description: 'Id of the user who post the comment',
-      resolve: root => root.postBy.nickname,
+      resolve: root => root.postBy,
     },
     text: {
       type: new GraphQLNonNull(GraphQLString),
@@ -154,13 +154,13 @@ const secretType: GraphQLObjectType = new GraphQLObjectType({
     },
 
     likes: {
-      type: new GraphQLList(GraphQLString),
+      type: new GraphQLList(UserType),
       description: 'Number of likes of the secret',
       resolve: root => root.likes,
     },
 
     dislikes: {
-      type: new GraphQLList(GraphQLString),
+      type: new GraphQLList(UserType),
       description: 'Number of dislikes of the secret',
       resolve: root => root.dislikes,
     },

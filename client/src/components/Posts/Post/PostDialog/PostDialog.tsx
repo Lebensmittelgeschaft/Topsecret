@@ -52,7 +52,7 @@ class PostDialog extends React.Component<PostDialogProps, PostDialogState> {
                 <Avatar>
                     <AccountCircle />
                 </Avatar>
-                <ListItemText primary={comment.postBy} secondary={comment.text} />
+                <ListItemText primary={comment.postBy.nickname} secondary={comment.text} />
                 <ListItemSecondaryAction>
                     {new Date(+comment.timestamp).toLocaleString()}
                 </ListItemSecondaryAction>

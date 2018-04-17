@@ -18,9 +18,9 @@ export interface PostProps {
     id: string;
     publisher: { id: string, nickname: string };
     text: string;
-    comments: { postBy: string, text: string, timestamp: string }[];
-    likes: string[];
-    dislikes: string[];
+    comments: { postBy: { id: string, nickname: string }, text: string, timestamp: string }[];
+    likes: { id: string, nickname: string }[];
+    dislikes: { id: string, nickname: string }[];
     timestamp: string;
   };
 }
@@ -87,16 +87,17 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     this.setState(this.setLikeDislikeStatus(this.props.secret));
   }
 
-  /* tslint:disable:no-console */
   setLikeDislikeStatus(
     secret: {
       likes: PostProps['secret']['likes'],
       dislikes: PostProps['secret']['dislikes']
     }) {
+      /* tslint:disable:no-console */
+    console.log(secret);
     return {
       ...this.state,
-      likeToggled: secret.likes.indexOf(localStorage.getItem('userId') || '') !== -1,
-      dislikeToggled: secret.dislikes.indexOf(localStorage.getItem('userId') || '') !== -1
+      likeToggled: !!secret.likes.find(user => user.id === localStorage.getItem('userId')),
+      dislikeToggled: !!secret.dislikes.find(user => user.id === localStorage.getItem('userId'))
     };
   }
 
@@ -213,35 +214,38 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     switch (likeType) {
       case (ToggleLikeType.LIKE):
         if (this.state.likeToggled) {
-          response.toggleLike.secret.likes =
-            response.toggleLike.secret.likes
-              .splice(this.props.secret.likes.indexOf(localStorage.getItem('userId') || ''), 1);
+          response.toggleLike.secret.likes = 
+            this.props.secret.likes.filter(user => user.id !== localStorage.getItem('userId'));
         } else {
           if (this.state.dislikeToggled) {
-            response.toggleLike.secret.dislikes =
-              response.toggleLike.secret.dislikes
-                .splice(this.props.secret.dislikes.indexOf(localStorage.getItem('userId') || ''), 1);
+            response.toggleLike.secret.dislikes = 
+              this.props.secret.dislikes.filter(user => user.id !== localStorage.getItem('userId'));
           }
-          response.toggleLike.secret.likes.push(localStorage.getItem('userId') || '');
+          response.toggleLike.secret.likes.push({
+             id: localStorage.getItem('userId') || '',
+             nickname: localStorage.getItem('userNickname') || '',
+          });
         }
         break;
       case (ToggleLikeType.DISLIKE):
         if (this.state.dislikeToggled) {
-          response.toggleLike.secret.dislikes =
-            response.toggleLike.secret.dislikes
-              .splice(this.props.secret.dislikes.indexOf(localStorage.getItem('userId') || ''), 1);
+          response.toggleLike.secret.dislikes = 
+            this.props.secret.dislikes.filter(user => user.id !== localStorage.getItem('userId'));
         } else {
           if (this.state.likeToggled) {
-            response.toggleLike.secret.likes =
-              response.toggleLike.secret.likes
-                .splice(this.props.secret.likes.indexOf(localStorage.getItem('userId') || ''), 1);
+            response.toggleLike.secret.likes = 
+              this.props.secret.likes.filter(user => user.id !== localStorage.getItem('userId'));
           }
-          response.toggleLike.secret.dislikes.push(localStorage.getItem('userId') || '');
+          response.toggleLike.secret.dislikes.push({
+            id: localStorage.getItem('userId') || '',
+            nickname: localStorage.getItem('userNickname') || '',
+          });
         }
         break;
       default:
     }
-
+    console.log('response: ');
+    console.log(response.toggleLike.secret);
     this.setState(this.setLikeDislikeStatus(response.toggleLike.secret));
     return response;
   }

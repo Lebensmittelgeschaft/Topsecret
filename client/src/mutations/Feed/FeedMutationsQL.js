@@ -7,8 +7,12 @@ export const ToggleLikeQL = graphql`
         toggleLike(input: $input) {
             secret {
                 id
-                likes
-                dislikes 
+                likes {
+                    id
+                }
+                dislikes {
+                    id
+                }
             }
             clientMutationId
         }
@@ -22,8 +26,12 @@ export const ToggleDislikeQL = graphql`
         toggleDislike(input: $input) {
             secret {
                 id
-                likes
-                dislikes 
+                likes {
+                    id
+                }
+                dislikes {
+                    id
+                }
             }
             clientMutationId
         }
@@ -37,10 +45,17 @@ export const addCommentQL = graphql`
         addComment(input: $input) {
             secret {
                 id
-                likes
-                dislikes
+                likes {
+                    id                    
+                }
+                dislikes {
+                    id
+                }
                 comments {
-                    postBy
+                    postBy {
+                        id
+                        nickname
+                    }
                     text
                     timestamp
                 }

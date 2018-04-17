@@ -1,6 +1,6 @@
 input addCommentInput {
   secretId: ID!
-  postBy: String!
+  postBy: ID!
   text: String!
   clientMutationId: String
 }
@@ -16,7 +16,7 @@ type Comment {
   id: String!
 
   """Id of the user who post the comment"""
-  postBy: String!
+  postBy: User
 
   """Actual text of the comment"""
   text: String!
@@ -38,7 +38,7 @@ type createMessagePayload {
 }
 
 input createSecretInput {
-  publisher: String!
+  publisher: ID!
   text: String!
   clientMutationId: String
 }
@@ -142,10 +142,10 @@ type Secret implements Node {
   comments: [Comment]
 
   """Number of likes of the secret"""
-  likes: [String]
+  likes: [User]
 
   """Number of dislikes of the secret"""
-  dislikes: [String]
+  dislikes: [User]
 
   """Timestamp in milliseconds of date the secret published"""
   timestamp: String
@@ -153,7 +153,7 @@ type Secret implements Node {
 
 input toggleDislikeInput {
   secretId: ID!
-  userId: String!
+  userId: ID!
   clientMutationId: String
 }
 
@@ -164,7 +164,7 @@ type toggleDislikePayload {
 
 input toggleLikeInput {
   secretId: ID!
-  userId: String!
+  userId: ID!
   clientMutationId: String
 }
 
