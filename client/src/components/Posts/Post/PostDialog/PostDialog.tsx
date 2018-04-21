@@ -9,6 +9,7 @@ import Button from 'material-ui/Button';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Slide from 'material-ui/transitions/Slide';
 import CloseIcon from 'material-ui-icons/Close';
@@ -16,7 +17,6 @@ import AccessTime from 'material-ui-icons/AccessTime';
 import ThumbUp from 'material-ui-icons/ThumbUp';
 import ThumbDown from 'material-ui-icons/ThumbDown';
 import AccountCircle from 'material-ui-icons/AccountCircle';
-import Dialog from 'material-ui/Dialog';
 import { PostProps } from '../Post';
 
 export interface PostDialogProps {
@@ -26,27 +26,79 @@ export interface PostDialogProps {
     /* tslint:disable:no-any */
     handleLike: React.EventHandler<any>;
     handleDislike: React.EventHandler<any>;
+    handleAddComment: React.EventHandler<any>;
+    likeToggled: boolean;
+    dislikeToggled: boolean;
+
 }
 
 export interface PostDialogState {
     currentShowing: boolean;
+    text: string;
+    messageSent: boolean;
 }
 
-class PostDialog extends React.Component<PostDialogProps, PostDialogState> {
+const actionStyle = {
+    dislikeOn: {
+        opacity: 1,
+    },
+    likeOn: {
+        opacity: 1,
+    },
+    dislikeOff: {
+        opacity: 0.5,
+    },
+    likeOff: {
+        opacity: 0.5
+    }
+};
+
+class PostDialog extends React.Component<PostDialogProps, PostDialogState> {    
 
     constructor(props: PostDialogProps) {
         super(props);
         this.state = {
             currentShowing: props.open,
+            text: '',
+            messageSent: false,
         };
     }
 
     handleClose = (event: React.SyntheticEvent<any>) => {
         this.props.toggleShow();
+    }    
+
+    handleKeyChange = (event: React.KeyboardEvent<any>) => {
+        /* tslint:disable:no-console */
+        if (event.key === 'Enter') {
+            if (event.shiftKey) {
+                this.setState({ ...this.state, text: this.state.text + '\r\n' });
+            } else {
+                const textMessage = this.state.text;
+                this.props.handleAddComment(textMessage);
+                this.setState({ ...this.state, messageSent: true, text: '' });
+            }
+        } 
+    }
+
+    handleTextChange = (event: React.ChangeEvent<any>) => {
+        if (event.target.value.charCodeAt(event.target.value.length - 1) !== '10') {
+            this.setState({ ...this.state, text: event.target.value });
+        }
+    }
+
+    shouldComponentUpdate(nextProps: PostDialogProps, nextState: PostDialogState) {        
+        return (this.props.likeToggled !== nextProps.likeToggled ||
+                this.props.dislikeToggled !== nextProps.dislikeToggled ||
+                (this.props.secret.comments.length !== nextProps.secret.comments.length ||
+                 nextState.messageSent === true));
+    }
+
+    componentDidUpdate(prevProps: PostDialogProps, prevState: PostDialogState) {
+        this.setState({ ...this.state, messageSent: prevState.messageSent });
     }
 
     render() {
-
         const comments = this.props.secret.comments.map((comment, index) => (
             <ListItem key={index}>
                 <Avatar>
@@ -116,12 +168,26 @@ class PostDialog extends React.Component<PostDialogProps, PostDialogState> {
                                 alignItems="center"
                             >
                                 <Grid item={true}>
-                                    <Button size="small" onClick={this.props.handleLike}>
+                                    <Button
+                                        style={
+                                            this.props.dislikeToggled ?
+                                                actionStyle.dislikeOn : actionStyle.dislikeOff
+                                        }
+                                        size="small"
+                                        onClick={this.props.handleDislike}
+                                    >
                                         <ThumbDown />
                                     </Button>
                                 </Grid>
                                 <Grid item={true}>
-                                    <Button size="small" onClick={this.props.handleDislike}>
+                                    <Button
+                                        style={
+                                            this.props.likeToggled ?
+                                                actionStyle.likeOn : actionStyle.likeOff
+                                        }
+                                        size="small"
+                                        onClick={this.props.handleLike}
+                                    >
                                         <ThumbUp />
                                     </Button>
                                 </Grid>
@@ -145,17 +211,29 @@ class PostDialog extends React.Component<PostDialogProps, PostDialogState> {
                             </Grid>
                         </CardActions>
                         <Divider />
-                        <List style={{ overflow: 'auto', maxHeight: 250 }}>                            
+                        <List style={{ overflow: 'auto', maxHeight: 210 }}>
                             {comments.length ? comments : 'There\'s no comments for this post'}
                         </List>
-                        <TextField                            
-                            multiline={true}
-                            fullWidth={true}
-                            InputProps={{ disableUnderline: true }}
-                            rowsMax={2}
-                            placeholder="Message"
-                            margin="normal"
-                        />
+                        <Grid container={true} alignItems="center">
+                            <Grid item={true}>
+                                <Avatar>
+                                    <AccountCircle />
+                                </Avatar>
+                            </Grid>
+                            <Grid item={true} lg={11} md={11} xl={11} xs={11} sm={11}>
+                                <TextField
+                                    multiline={true}
+                                    fullWidth={true}
+                                    InputProps={{ disableUnderline: true }}
+                                    rowsMax={2}
+                                    placeholder="Enter message..."
+                                    margin="normal"
+                                    onKeyPress={this.handleKeyChange}
+                                    onChange={this.handleTextChange}
+                                    {...(this.state.text ? { defaultValue: this.state.text } : null )}
+                                />
+                            </Grid>
+                        </Grid>
                     </Card>
                 </div>
             </Dialog>

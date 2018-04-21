@@ -58,7 +58,21 @@ export const addCommentQL = graphql`
                     }
                     text
                     timestamp
-                }
+                }                
+            }
+            clientMutationId
+        }
+    }
+`;
+
+export const createPostQL = graphql`
+    mutation FeedMutationsQL_CreatePostMutation(
+        $input: createSecretInput!
+    ) {
+        createSecret(input: $input) {
+            secret {
+                id
+                ...FeedQuery_secret                
             }
             clientMutationId
         }

@@ -116,7 +116,10 @@ const secretMutations: Thunk<GraphQLFieldConfigMap<any, any>> = {
       secret: { type: SecretType },
     },
     mutateAndGetPayload: async (inputArgs) => {
-      const secretModel = new SecretModel({ publisher: inputArgs.publisher, text: inputArgs.text });
+      const secretModel = new SecretModel({
+         publisher: fromGlobalId(inputArgs.publisher).id,
+         text: inputArgs.text,
+      });
       return { secret: await SecretController.save(secretModel) };
     },
   }),

@@ -87,13 +87,18 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     this.setState(this.setLikeDislikeStatus(this.props.secret));
   }
 
+  shouldComponentUpdate(nextProps: PostProps & WithStyles<keyof PostStyleProps>, nextState: PostState) {
+    return (this.props.secret.likes.length !== nextProps.secret.likes.length ||
+            this.props.secret.dislikes.length !== nextProps.secret.dislikes.length ||
+            this.state.openDialog !== nextState.openDialog ||
+            this.props.secret.comments.length !== nextProps.secret.comments.length);
+  }
+
   setLikeDislikeStatus(
     secret: {
       likes: PostProps['secret']['likes'],
       dislikes: PostProps['secret']['dislikes']
     }) {
-      /* tslint:disable:no-console */
-    console.log(secret);
     return {
       ...this.state,
       likeToggled: !!secret.likes.find(user => user.id === localStorage.getItem('userId')),
@@ -102,6 +107,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
   }
 
   render() {
+
     return (
       <div>
         <Card className={this.props.classes.post}>
@@ -174,7 +180,10 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
           open={this.state.openDialog}
           toggleShow={this.toggleOpenDialog}
           handleLike={this.handleToggleLike}
-          handleDislike={this.handleToggleDislike}          
+          handleDislike={this.handleToggleDislike}
+          handleAddComment={this.handleAddComment}
+          dislikeToggled={this.state.dislikeToggled}                    
+          likeToggled={this.state.likeToggled}
         /> : null}
       </div>
     );
@@ -197,6 +206,14 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     FeedMutator.toggleDislike(this.props.secret.id)({
       optimisticResponse: this.getToggleLikeOptimisticResponse(ToggleLikeType.DISLIKE),
       onError: (error) => console.log('Error Dislike'),
+    });    
+  }
+
+  private handleAddComment = (commentText: string) => {
+    /* tslint:disable:no-console */
+    FeedMutator.addComment(this.props.secret.id, commentText)({
+      optimisticResponse: this.getAddCommentOptimisticResponse(commentText),
+      onError: (error) => console.log('Comment error: ' + error),
     });
   }
 
@@ -204,9 +221,9 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
     const response = {
       toggleLike: {
         secret: {
-          id: this.props.secret.id,
+          ...this.props.secret,
           likes: [...this.props.secret.likes],
-          dislikes: [...this.props.secret.likes],
+          dislikes: [...this.props.secret.dislikes],
         }
       }
     };
@@ -231,7 +248,7 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
         if (this.state.dislikeToggled) {
           response.toggleLike.secret.dislikes = 
             this.props.secret.dislikes.filter(user => user.id !== localStorage.getItem('userId'));
-        } else {
+        } else {          
           if (this.state.likeToggled) {
             response.toggleLike.secret.likes = 
               this.props.secret.likes.filter(user => user.id !== localStorage.getItem('userId'));
@@ -243,10 +260,30 @@ class Post extends React.Component<PostProps & WithStyles<keyof PostStyleProps>,
         }
         break;
       default:
-    }
-    console.log('response: ');
-    console.log(response.toggleLike.secret);
+    }    
     this.setState(this.setLikeDislikeStatus(response.toggleLike.secret));
+    return response;
+  }
+
+  private getAddCommentOptimisticResponse(commentText: string) {
+    const response = {
+      addComment: {
+        secret: {
+          ...this.props.secret,
+          comments: [...this.props.secret.comments],
+        }
+      }
+    };
+    
+    response.addComment.secret.comments.push({ 
+      postBy: { 
+        id: localStorage.getItem('userId') || '',
+        nickname: localStorage.getItem('userNickname') || '',
+      },
+      text: commentText,
+      timestamp: (new Date().getTime()) + '',
+    });
+    
     return response;
   }
 

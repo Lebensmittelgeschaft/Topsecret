@@ -44,3 +44,9 @@ query FeedQuery($pageNum: Int) {
   ...FeedQuery_posts @arguments(pageNum: $pageNum)
 }
 `;
+
+export const postsRefetchQuery = graphql`
+query FeedQuery_RefetchPostsQuery($pageNum: Int) {
+  ...FeedQuery_posts @arguments(pageNum: $pageNum)
+}
+`;

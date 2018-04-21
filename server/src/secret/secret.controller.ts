@@ -8,7 +8,7 @@ const baseController = controllerFactory<ISecret>(new SecretService());
 export class SecretController extends baseController {
 
   // Hold the amount of documents to pull by the pagination
-  private static readonly PAGE_SIZE = 3;
+  private static readonly PAGE_SIZE = 10;
 
   /**
    * Get secrets by page slices from the db
@@ -22,6 +22,10 @@ export class SecretController extends baseController {
                                                                         SecretController.PAGE_SIZE,
                                                                         props ? props : {});
                                                  
+  }
+
+  static save(model: ISecret) {
+    return baseController.save(model).then(value => value.populate('publisher').execPopulate());
   }
 
   /**
