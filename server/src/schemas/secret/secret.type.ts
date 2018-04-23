@@ -155,13 +155,13 @@ const secretType: GraphQLObjectType = new GraphQLObjectType({
 
     likes: {
       type: new GraphQLList(UserType),
-      description: 'Number of likes of the secret',
+      description: 'Array references of users who like of the secret',
       resolve: root => root.likes,
     },
 
     dislikes: {
       type: new GraphQLList(UserType),
-      description: 'Number of dislikes of the secret',
+      description: 'Array references of users who dislike of the secret',
       resolve: root => root.dislikes,
     },
 

@@ -5,7 +5,9 @@ const testConfig = {
 
 const devConfig = {
   MONGOURI: 'mongodb://root:root@ds259268.mlab.com:59268/topsecret_dev',
-  PORT: 3000,
+  //PORT: 3000,
+  // Change before commit
+  PORT: 4000,
 };
 
 const prodConfig = {

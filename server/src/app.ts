@@ -34,7 +34,7 @@ app.use(logger(process.env.NODE_ENV || 'dev'));
 // Cross-origin-resource-share policy 
 // Need to be configured for real origins and headers like 'Authorization'
 const corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: 'http://localhost:3002',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 };
