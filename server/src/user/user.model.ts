@@ -1,11 +1,13 @@
 import { Schema, model } from 'mongoose';
 import { IBaseModel } from '../generic/generic.interface';
 import { userUniqueValidator, userNicknameValidator } from './user.validator';
+import { notificationRefValidator } from '../notification/notification.validator';
 import * as crypto from 'crypto';
 
 export interface IUser extends IBaseModel {
   _id: string;
   nickname: string;
+  notifications: string[];
 }
 
 const userSchema: Schema = new Schema({
@@ -19,7 +21,13 @@ const userSchema: Schema = new Schema({
     required: true,
     unique: true,
     validate: userNicknameValidator,
-  },       
+  },
+  notifications: [{
+    type: String,
+    ref: 'Notification',
+    validate: notificationRefValidator,
+    default: [],
+  }]       
 });
 
 // Utility method for generate hash for given string
